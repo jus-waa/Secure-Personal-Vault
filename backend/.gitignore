@@ -1,0 +1,14 @@
+# Node Modules
+node_modules/
+
+# Environment Files
+.env
+
+# Database Dumps
+db.sql
+pgdata/
+*.dump
+
+# Logs
+*.log
+logs/
