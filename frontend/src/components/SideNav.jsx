@@ -1,4 +1,5 @@
-export default function SideNav() {
+import React from "react";
+const SideNav = () => {
   return (
     <>  
       <nav className="h-screen w-screen fixed top-0 left-0 z-50 grid grid-cols-[1fr_5fr]">
@@ -19,3 +20,5 @@ export default function SideNav() {
     </>
   );
 }
+
+export default SideNav;

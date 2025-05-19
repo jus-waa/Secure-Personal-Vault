@@ -7,11 +7,12 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Verdana', 'sans-serif'],
+        sans: ['Poppins', 'sans-serif'],
       },
       colors: {
-        navlight: '#595959',
-        }
+        primary: "#2B85FF",
+        secondary: "EF863E"
+        },
     },
   },
   plugins: [],
