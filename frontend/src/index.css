@@ -18,6 +18,6 @@
     }
 
     .btn-primary {
-        @apply w-full text-sm p-2 my-1 text-center bg-primary text-white rounded hover:bg-blue-600;
+        @apply w-full text-sm p-2 my-1 text-center bg-sky-400 text-white rounded transform duration-500 hover:bg-sky-500;
     }
 }

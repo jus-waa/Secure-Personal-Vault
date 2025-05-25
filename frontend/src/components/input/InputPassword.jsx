@@ -14,7 +14,7 @@ const InputPassword = ({ value, onChange, placeholder}) => {
              onChange={onChange}
              type={ShowPassword ? "text" : "password"}
              placeholder={placeholder||"Password"}
-             className='w-full text-sm bg-transparent rounded outline-none'
+             className='w-full text-sm bg-transparent outline-none'
             />
 
             {ShowPassword ? (<FaRegEye
