@@ -5,6 +5,7 @@ import { LuBookLock } from "react-icons/lu";
 import InputPassword from "../components/input/InputPassword";
 import { validateEmail, validatePassword } from "../utils/helper";
 import CloudDesign from "../components/CloudDesign";
+import SideNav from "../components/SideNav";
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
@@ -37,8 +38,9 @@ const LoginPage = () => {
     return(
         <>
             <CloudDesign />
+            <SideNav />
             <div className="h-screen w-screen flex flex-col place-content-center items-center ">
-            <h1 className="flex mb-4 text-4xl text-primary"><LuBookLock />LockPad</h1>
+            <h1 className="flex mb-4 text-4xl text-primary"><LuBookLock />SkyVault</h1>
                 <div className="grid grid-rows-[1fr_4fr] h-96 w-3/12 border-2 bg-white rounded z-10">
                     <h1 className="place-content-center text-2xl pl-8 pt-8 pb-2">
                         Sign In
