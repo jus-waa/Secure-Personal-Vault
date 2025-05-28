@@ -20,4 +20,8 @@
     .btn-primary {
         @apply w-full text-sm p-2 my-1 text-center bg-sky-400 text-white rounded transform duration-500 hover:bg-sky-500;
     }
+
+    .icon-btn {
+        @apply text-xl text-slate-300 cursor-pointer hover:text-primary;
+    }
 }
