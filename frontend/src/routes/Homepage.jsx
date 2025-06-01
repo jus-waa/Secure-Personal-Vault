@@ -5,7 +5,7 @@ import NoteCard from "../components/cards/NoteCard";
 import AddEditNotes from "./AddEditNotes";
 import { MdAdd } from "react-icons/md";
 
-Modal.setAppElement("#root");
+Modal.setAppElement("#root"); 
 
 export default function Homepage() {
   const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -39,7 +39,6 @@ export default function Homepage() {
       <button
         className="w-16 h-16 flex items-center justify-center rounded-full bg-blue-500 hover:bg-blue-600 fixed right-10 bottom-10 z-50"
         onClick={() => {
-          console.log("Plus clicked");
           setOpenAddEditModal({ isShown: true, type: "add", data: null });
         }}
       >
@@ -56,12 +55,12 @@ export default function Homepage() {
         contentLabel="Add/Edit Note"
       >
         <AddEditNotes
-        type={openAddEditModal.type} 
-        noteData={openAddEditModal.data}
-         onClose={() => {
-         setOpenAddEditModal({ isShown: false, type: "add", data: null });
+          type={openAddEditModal.type}
+          noteData={openAddEditModal.data}
+          onClose={() => {
+            setOpenAddEditModal({ isShown: false, type: "add", data: null });
           }}
-        />  
+        />
       </Modal>
     </div>
   );
