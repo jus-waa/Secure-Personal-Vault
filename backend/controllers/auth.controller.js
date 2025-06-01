@@ -7,6 +7,7 @@ import {
     sendWelcomeEmail,
 } from "../mailtrap/emails.js";
 export const signup = async(req, res) => {
+    //get email, password, name
     const {email, password, name} = req.body;
     try {
         //check for empty fields
@@ -71,7 +72,7 @@ export const verifyEmail = async(req, res) => {
             return res.status(400).json({
                 status: "failed",
                 message: "Invalid or expired verificaiton code" 
-            })
+            });
         }
         //after verifying remove token and expiration
         user.isVerified = true;
@@ -99,7 +100,47 @@ export const verifyEmail = async(req, res) => {
 };
 
 export const login = async(req, res) => {
-
+    //get email, password
+    const {email, password} = req.body;
+    try {
+        const user = await User.findOne({email});
+        //check if user input is valid
+        if(!user){
+            return res.status(400).json({
+                status: "failed",
+                message: "Invalid credentials" 
+            });
+        }
+        //check for pasword validity
+        const passwordValidity = await bcryptjs.compare(password, user.password);
+        if(!passwordValidity){
+            return res.status(400).json({
+                status: "failed",
+                message: "Invalid password" 
+            });
+        }
+        //jwt again
+        generateTokenAndSetCookie(res, user._id);
+        //update timestamp user last login
+        user.lastLogin = new Date();
+        await user.save();
+        //display message
+        res.status(200).json({
+            status: "success",
+            message: "Logged in successfully",
+            user: {
+                ...user._doc,
+                password: undefined,
+            },
+        });
+    } catch (error) {
+        //display error
+        console.log("Login error ", error);
+        res.status(400).json({
+            status: "failed",
+            message: error.message
+        });
+    }
 };
 
 export const logout = async(req, res) => {
