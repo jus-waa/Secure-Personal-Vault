@@ -1,7 +1,6 @@
 import NoteCard from "../components/cards/NoteCard"
 import SideNav from "../components/SideNav"
 import { MdAdd } from "react-icons/md";
-
 export default function Homepage() {
   return (
     <>
@@ -37,13 +36,10 @@ export default function Homepage() {
           onPinNote={()=>{}}
           />
           </main>
-
-          
-
         </div>
       </div>
       
-      <button className="w-16 h-16 flex items-center justify-center rounded-2xl bg-primary bg-primary hover:bg-blue-600 absolute right-10 bottom-10  " onClick={() => {}}>
+      <button className="w-16 h-16 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 absolute right-10 bottom-10  " onClick={() => {}}>
         <MdAdd className="text-[32px] text-white" />
       </button>
     </>
