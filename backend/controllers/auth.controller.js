@@ -140,6 +140,16 @@ export const forgotPassword = async(req, res) => {
     }
 };
 
+export const resetPassword = async(req, res) => {
+    const { token } = req.params;
+    const { password } = req.body;
+    try {
+        
+    } catch (error) {
+        
+    }
+};
+
 export const login = async(req, res) => {
     //get email, password
     const {email, password} = req.body;
