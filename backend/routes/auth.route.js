@@ -5,11 +5,17 @@ import {
     logout,
     verifyEmail,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    checkAuth
 } from '../controllers/auth.controller.js';
+import {
+    validateToken
+} from '../middleware/validateToken.js';
 const router = express.Router();
 
 //router auths
+router.get("/check-auth", validateToken, checkAuth)
+
 router.post("/login", login);
 router.post("/signup", signup);
 router.post("/logout", logout);
