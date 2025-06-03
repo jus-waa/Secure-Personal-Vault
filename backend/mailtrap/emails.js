@@ -1,4 +1,4 @@
-import { client, sender } from "./mailtrap.config.js"
+import { client, sender } from "./email.config.js"
 import { 
     verificationEmailTemplate,
     welcomeEmailTemplate,
@@ -6,22 +6,22 @@ import {
  } from "./emailTemplates.js"
 
 export const sendVerificationEmail = async (email, verificationToken) => {
-    const recipient = [{email}];
-
     try {
-        const res = await client.send({
-            from: sender, 
-            to: recipient,
-            subject: "Email Verification Code",
+        const mailOptions = {
+            from: `"${sender.name}" <${sender.email}>`,
+            to: email, 
+            subject: "Verify Your Email",
             html: verificationEmailTemplate.replace("{verificationCode}", verificationToken),
-            category: "Email Verification"
-        });
- 	    console.log("Email sent successfully", res);
-	} catch (error) {
-		console.error(`Error sending verification`, error);
-		throw new Error(`Error sending verification email: ${error}`);
+            text: `Your verification code is: ${verificationToken}`,
+        };    
+        const res = await client.sendMail(mailOptions);
+        console.log("Email sent successfully", res);
+    } catch (error) {
+        console.error("Error sending email", error);
+        throw new Error("Email failed: " + error.message);
     }
 };
+
 
 export const sendWelcomeEmail = async (email, name) => {
     const recipient = [{email}];
