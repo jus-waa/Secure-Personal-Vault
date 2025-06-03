@@ -1,10 +1,12 @@
 import bcryptjs from "bcryptjs";
+import crypto from "crypto";
 ///test commit again
 import { User } from "../models/user.model.js";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
 import { 
     sendVerificationEmail,
     sendWelcomeEmail,
+    sendPasswordResetEmail,
 } from "../mailtrap/emails.js";
 export const signup = async(req, res) => {
     //get email, password, name
@@ -32,7 +34,7 @@ export const signup = async(req, res) => {
             password: hashedPassword,
             name,
             verificationToken,
-            verificationTokenExpiresAt: Date.now() + 10 * 60 * 1000 //1 hour
+            verificationTokenExpiresAt: Date.now() + 10 * 60 * 1000 //10 minutes
         })
         //save the user to db
         await user.save();
@@ -53,7 +55,7 @@ export const signup = async(req, res) => {
         //display error
         res.status(400).json({
             status: "failed",
-            message: error.message
+            message: error.message,
         });
     }
 };
@@ -94,8 +96,47 @@ export const verifyEmail = async(req, res) => {
         console.log("Error email verification", error);
         res.status(400).json({
             status: "failed",
-            
-        })
+            message: error.message,
+        });
+    }
+};
+
+export const forgotPassword = async(req, res) => {
+    // get email
+    const {email} = req.body;
+    try {
+        //check if its really the email
+        if(!email){
+            throw new Error("Please enter your email.");
+        }
+        const user = await User.findOne({email});
+        if(!user){
+            return res.status(400).json({
+                status: "failed",
+                message: "User doesn't exist."
+            })
+        }
+        //create reset token
+        const resetToken = crypto.randomBytes(20).toString("hex");
+        const resetTokenExpiresAt = Date.now() + 10 * 60 * 1000; //10 mins
+
+        user.resetPasswordToken = resetToken;
+        user.resetPasswordExpiresAt = resetTokenExpiresAt;
+
+        await user.save();
+        //jwt for sending token to email
+        await sendPasswordResetEmail(user.email, `${process.env.CLIENT_URL}/password-reset/${resetToken}`);
+        //display message
+        res.status(200).json({
+            status: "success",
+            message: "Password reset link has been sent.",
+        });
+    } catch (error) {
+        console.log("Error forgot password ", error);
+        res.status(400).json({
+            status: "failed",
+            message: error.message,
+        });
     }
 };
 
@@ -138,7 +179,7 @@ export const login = async(req, res) => {
         console.log("Login error ", error);
         res.status(400).json({
             status: "failed",
-            message: error.message
+            message: error.message,
         });
     }
 };
@@ -154,7 +195,7 @@ export const logout = async(req, res) => {
         console.log("Logout Failed", error)
         res.status(200).json({
             status: "failed",
-            message: "Logged out failed"
-        })
+            message: error.message,
+        });
     }
 };
