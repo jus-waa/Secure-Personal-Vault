@@ -14,8 +14,6 @@ export const sender = {
   email: process.env.GMAIL_USER,
   name: "Sky Vault",
 };
-
-
 /*
 import { MailtrapClient } from "mailtrap";
 import dotenv from "dotenv";

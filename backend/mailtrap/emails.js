@@ -3,6 +3,7 @@ import {
     verificationEmailTemplate,
     welcomeEmailTemplate,
     passwordResetRequestTemplate,
+    passwordResetSuccessTemplate,
  } from "./emailTemplates.js"
 
 export const sendVerificationEmail = async (email, verificationToken) => {
@@ -12,7 +13,7 @@ export const sendVerificationEmail = async (email, verificationToken) => {
             to: email, 
             subject: "Verify Your Email",
             html: verificationEmailTemplate.replace("{verificationCode}", verificationToken),
-            text: `Your verification code is: ${verificationToken}`,
+            category: "Email Verification"
         });    
         console.log("Email sent successfully", mailOptions);
     } catch (error) {
@@ -38,8 +39,6 @@ export const sendWelcomeEmail = async (email, name) => {
 };
 
 export const sendPasswordResetEmail = async (email, resetURL) => {
-    const recipient = [{email}];
-
     try {
         const mailOptions = await client.sendMail({
             from: `"${sender.name}" <${sender.email}>`,
@@ -49,6 +48,22 @@ export const sendPasswordResetEmail = async (email, resetURL) => {
             category: "Password Reset",
         });
  	    console.log("Email sent successfully", mailOptions);
+    } catch (error) {
+        console.error(`Error sending password reset`, error);
+		throw new Error(`Error sending password reset: ${error}`);
+    }
+}
+
+export const sendResetSuccessEmail = async (email) => {
+    try {
+        const mailOptions = await client.sendMail({
+            from: `"${sender.name}" <${sender.email}>`,
+            to: email,
+            subject: "Password Reset Successful",
+            html: passwordResetSuccessTemplate,
+            category: "Password Reset"
+        })
+        console.log("Email sent successfully", mailOptions);
     } catch (error) {
         console.error(`Error sending password reset`, error);
 		throw new Error(`Error sending password reset: ${error}`);
