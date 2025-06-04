@@ -263,3 +263,37 @@ export const checkAuth = async(req, res) => {
         });
     }
 };
+
+export const getUser = async(req, res) => {
+    //get userid
+    const userId = req.userId;
+    try {
+         //find user via id
+        const isUser = await User.findOne({
+            _id: userId
+        });
+        //if not user
+        if(!isUser){
+            return res.status(400).json({
+                status: "failed",
+                message: "User not found."
+            });
+        }
+		res.status(200).json({
+            success: true, 
+            user: {
+               name: isUser.name,
+               email: isUser.email,
+               "_id": isUser._id,
+               isVerified: isUser.isVerified
+            },
+            message: "User found."
+        });
+    } catch (error) {
+        console.log("Error check auth ", error);
+		res.status(400).json({
+            success: false, 
+            message: error.message
+        });
+    }
+};
