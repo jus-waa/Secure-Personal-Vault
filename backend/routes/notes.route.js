@@ -1,21 +1,17 @@
 import express from "express";
 import { 
-    getNotes,
-    addNotes,
-    createNote,
+    getNote,
+    addNote,
     deleteNote 
 } from "../controllers/notes.controller.js";
-//import { verifyToken } from "../middleware/auth.middleware.js";
 import { validateToken } from '../middleware/validateToken.js';
-import { verifyToken } from "../middleware/auth.middleware.js";
 const router = express.Router();
 
 //router notes
 router.use(validateToken); // All routes below require login
 
-router.get("/get-notes", getNotes);
-router.post("/add-notes", verifyToken, addNotes);
-router.post("/create-notes", createNote);
-router.delete("/delete-notes:id", deleteNote);
+router.get("/get-note", getNote);
+router.post("/add-note", addNote);
+router.delete("/delete-note:id", deleteNote);
 
 export default router;

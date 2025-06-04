@@ -10,9 +10,9 @@ import {
     sendResetSuccessEmail
 } from "../emails/emails.js";
 export const signup = async(req, res) => {
-    //get email, password, name
-    const {email, password, name} = req.body;
     try {
+        //get email, password, name
+        const {email, password, name} = req.body;
         //check for empty fields
         if(!email || !password || !name){
             throw new Error("All fields are required.");
@@ -39,8 +39,8 @@ export const signup = async(req, res) => {
         })
         //save the user to db
         await user.save();
-        //auth via jwt
-        generateTokenAndSetCookie(res, user._id);
+        //generate token and set cookie for auth using jwt
+        const accessToken = generateTokenAndSetCookie(res, user._id);
         //send verification email
         await sendVerificationEmail(user.email, verificationToken);
         //display message
@@ -51,6 +51,7 @@ export const signup = async(req, res) => {
                 ...user._doc,
                 password: undefined,
             },
+            accessToken,
         });
     } catch (error) {
         //display error
@@ -203,7 +204,7 @@ export const login = async(req, res) => {
             });
         }
         //jwt again
-        generateTokenAndSetCookie(res, user._id);
+        const accessToken = generateTokenAndSetCookie(res, user._id);
         //update timestamp user last login
         user.lastLogin = new Date();
         await user.save();
@@ -215,6 +216,7 @@ export const login = async(req, res) => {
                 ...user._doc,
                 password: undefined,
             },
+            accessToken,
         });
     } catch (error) {
         //display error

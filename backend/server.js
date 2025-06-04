@@ -1,4 +1,6 @@
 import express from "express";
+const app = express(); 
+
 import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
@@ -11,7 +13,6 @@ import noteRoutes from "./routes/notes.route.js"
 
 dotenv.config();
 
-const app = express(); 
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json()); //allow parsing incoming requests :req.body
