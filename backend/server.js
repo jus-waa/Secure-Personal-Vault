@@ -22,8 +22,8 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 //Routes
+//auth
 app.use("/api/v1/auth", authRoutes);
-
 //notes
 app.use("/api/v1/notes", noteRoutes);
 

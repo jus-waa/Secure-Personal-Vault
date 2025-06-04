@@ -252,14 +252,14 @@ export const checkAuth = async(req, res) => {
 		}
 
 		res.status(200).json({
-             success: true, 
-             user 
+            success: true, 
+            user 
         });
     } catch (error) {
         console.log("Error check auth ", error);
 		res.status(400).json({
-             success: false, 
-             message: error.message
+            success: false, 
+            message: error.message
         });
     }
 };
