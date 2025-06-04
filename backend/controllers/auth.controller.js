@@ -1,6 +1,6 @@
 import bcryptjs from "bcryptjs";
 import crypto from "crypto";
-///test commit again
+
 import { User } from "../models/user.model.js";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
 import { 
@@ -8,7 +8,7 @@ import {
     sendWelcomeEmail,
     sendPasswordResetEmail,
     sendResetSuccessEmail
-} from "../mailtrap/emails.js";
+} from "../emails/emails.js";
 export const signup = async(req, res) => {
     //get email, password, name
     const {email, password, name} = req.body;

@@ -2,8 +2,7 @@ import mongoose from "mongoose";
 
 const noteSchema = new mongoose.Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
     required: true,
   },
   title: {
@@ -14,12 +13,18 @@ const noteSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  isPinned: {
+    type: Boolean,
+    default: false,
+  },
+  tags: {
+    type: [String],
+    default: [],
+  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
 
-const Note = mongoose.model("Note", noteSchema);
-
-export default Note;
+export const Note = mongoose.model("Note", noteSchema);
