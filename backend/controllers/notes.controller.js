@@ -1,4 +1,4 @@
-import Note from "../models/note.model.js";
+import { Note } from "../models/note.model.js";
 
 // Get all notes (not user-specific yet)
 export const getNotes = async (req, res) => {
@@ -9,6 +9,44 @@ export const getNotes = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch notes." });
   }
 };
+
+// Add a note 
+export const addNotes = async (req, res) => {
+  try {
+    const { title, content, tags } = req.body;
+    const user = req.user;
+    if (!title) {
+      return res.status(400).json({
+        status: "failed",
+        message: "Title is required",
+      });
+    }
+    if (!content) {
+      return res.status(400).json({
+        status: "failed",
+        message: "Content is required",
+      });
+    }
+
+    const newNote = new Note({
+      userId: user.userId,
+      title,
+      content,
+      tags: tags || [],
+    });
+    await newNote.save();
+    return res.status(201).json({
+      status: "success",
+      message: "Note added successfully",
+    });
+  } catch (error) {
+    console.log("Error adding new note ", error);
+    res.status(400).json({
+        status: "failed",
+        message: error.message,
+    });
+  }
+}
 
 // Create a note
 export const createNote = async (req, res) => {
