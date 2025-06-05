@@ -18,8 +18,9 @@ const SettingsPage = () => {
 
   return (
     <div className="relative">
+      
       <SideNav />
-      <div className="min-h-screen bg-white ml-48 flex flex-col place-content-center items-center py-8">
+      <div className="min-h-screen bg-amber-50 ml-48 flex flex-col place-content-center items-center py-8">
         <h1 className="flex mb-8 text-4xl text-primary">
           <LuBookLock />
           SkyVault Settings

@@ -11,8 +11,9 @@ export default {
       },
       colors: {
         primary: "#38bdf8",
-        secondary: "EF863E"
+        secondary: "EF863E",
         },
+      
     },
   },
   plugins: [],
