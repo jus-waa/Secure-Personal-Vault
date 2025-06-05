@@ -6,7 +6,8 @@ import {
     verifyEmail,
     forgotPassword,
     resetPassword,
-    checkAuth
+    checkAuth,
+    getUser
 } from '../controllers/auth.controller.js';
 import {
     validateToken
@@ -14,7 +15,8 @@ import {
 const router = express.Router();
 
 //router auths
-router.get("/check-auth", validateToken, checkAuth)
+router.get("/check-auth", validateToken, checkAuth);
+router.get("/get-user", validateToken, getUser);
 
 router.post("/login", login);
 router.post("/signup", signup);

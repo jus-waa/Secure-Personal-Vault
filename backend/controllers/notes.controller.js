@@ -1,83 +1,181 @@
 import { Note } from "../models/note.model.js";
 
-// Get all notes (not user-specific yet)
-export const getNotes = async (req, res) => {
-  try {
-    const notes = await Note.find().sort({ createdAt: -1 });
-    res.status(200).json(notes);
-  } catch (error) {
-    res.status(500).json({ message: "Failed to fetch notes." });
-  }
+// Get all notes
+export const getAllNotes = async (req, res) => {
+    const userId = req.userId;
+    try {
+        const notes = await Note.find({
+            userId
+        }).sort({ isPinned: -1});
+        return res.status(200).json({
+            status: "success",
+            notes,
+            message: "All notes retrieved successfully."
+        });
+    } catch (error) {
+        console.log
+        return res.status(400).json({
+            status: "failed", 
+            message: "Failed to fetch notes." 
+        });
+    }
 };
 
 // Add a note 
-export const addNotes = async (req, res) => {
-  try {
+export const addNote = async (req, res) => {
+    //get title, content, tags, and userId
     const { title, content, tags } = req.body;
-    const user = req.user;
-    if (!title) {
-      return res.status(400).json({
-        status: "failed",
-        message: "Title is required",
-      });
+    const userId = req.userId;
+    try {
+        if (!title) {
+            return res.status(400).json({
+                status: "failed",
+                message: "Title is required",
+            });
+        }
+        if (!content) {
+            return res.status(400).json({
+                status: "failed",
+                message: "Content is required",
+            });
+        }
+        const newNote = new Note({
+            userId,
+            title,
+            content,
+            tags: tags || [],
+        });
+        await newNote.save(); // always save
+        //display message
+        return res.status(201).json({
+            status: "success",
+            message: "Note added successfully",
+        });
+    } catch (error) {
+        console.log("Error adding new note ", error);
+        return res.status(400).json({
+            status: "failed",
+            message: error.message,
+        });
     }
-    if (!content) {
-      return res.status(400).json({
-        status: "failed",
-        message: "Content is required",
-      });
-    }
-
-    const newNote = new Note({
-      userId: user.userId,
-      title,
-      content,
-      tags: tags || [],
-    });
-    await newNote.save();
-    return res.status(201).json({
-      status: "success",
-      message: "Note added successfully",
-    });
-  } catch (error) {
-    console.log("Error adding new note ", error);
-    res.status(400).json({
-        status: "failed",
-        message: error.message,
-    });
-  }
 }
 
-// Create a note
-export const createNote = async (req, res) => {
-  try {
-    const { title, content } = req.body;
+// Edit note
+export const editNote = async (req, res) => {
+    //get title, content, tags, isPinned, userId, and noteId
+    const noteId = req.params.noteId;
+    const { title, content, tags, isPinned } = req.body;
+    const userId = req.userId;
 
-    if (!title || !content) {
-      return res.status(400).json({ message: "Title and content are required." });
+    try {
+        //check if there are changes per note
+        if (!title && !content && !tags) {
+            return res.status(400).json({
+                status: "failed",
+                message: "No changes",
+            });
+        }
+        //get note via id
+        const note = await Note.findOne({
+            _id: noteId,
+            userId,
+        })
+        //if note not found
+        if(!note) {
+            return res.status(404).json({
+                status: "failed",
+                message: "Note not found."
+            });
+        }
+        //how change works
+        if(title) note.title = title;
+        if(content) note.content = content;
+        if(tags) note.tags = tags;
+        if(isPinned) note.isPinned = isPinned;
+        await note.save(); //always save
+        //display message 
+        return res.status(200).json({
+            status: "success",
+            message: "Note updated successfully."
+        })
+    } catch (error) {
+        console.log("Error updating new note ", error);
+        return res.status(400).json({
+            status: "failed",
+            message: error.message,
+        });
     }
-
-    const newNote = new Note({ title, content });
-    await newNote.save();
-
-    res.status(201).json(newNote);
-  } catch (error) {
-    res.status(500).json({ message: "Failed to create note." });
-  }
-};
+}
 
 // Delete a note
 export const deleteNote = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deleted = await Note.findByIdAndDelete(id);
-
-    if (!deleted) {
-      return res.status(404).json({ message: "Note not found." });
+    const noteId = req.params.noteId;
+    const userId = req.userId;
+    try {
+        //get the note via noteId
+        const note = await Note.findOne({
+            _id: noteId,
+            userId
+        })
+        //if note not found
+        if(!note) {
+            return res.status(404).json({
+                status: "failed",
+                message: "Note not found."
+            })
+        }
+        await Note.deleteOne({
+            _id: noteId,
+            userId
+        });
+        //display message
+        return res.status(200).json({
+            status: "success",
+            note,
+            message: "Note deleted successfully."
+        });
+    } catch (error) {
+        console.log
+        return res.status(400).json({
+            status: "failed", 
+            message: "Failed to fetch notes." 
+        });
     }
+};
 
-    res.status(200).json({ message: "Note deleted." });
-  } catch (error) {
-    res.status(500).json({ message: "Failed to delete note." });
-  }
+// Update isPinned
+export const isPinned = async (req, res) => {
+//get title, content, tags, isPinned, userId, and noteId
+    const noteId = req.params.noteId;
+    const { isPinned } = req.body;
+    const userId = req.userId;
+
+    try {
+        //get note via id
+        const note = await Note.findOne({
+            _id: noteId,
+            userId,
+        })
+        //if note not found
+        if(!note) {
+            return res.status(404).json({
+                status: "failed",
+                message: "Note not found."
+            });
+        }
+        //how change works
+        if(isPinned) note.isPinned = isPinned;
+        await note.save(); //always save
+        //display message 
+        return res.status(200).json({
+            status: "success",
+            message: "Note updated successfully."
+        })
+    } catch (error) {
+        console.log("Error updating new note ", error);
+        return res.status(400).json({
+            status: "failed",
+            message: error.message,
+        });
+    }
 };
