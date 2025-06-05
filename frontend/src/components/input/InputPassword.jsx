@@ -8,13 +8,13 @@ const InputPassword = ({ value, onChange, placeholder}) => {
   
     return (
     <>
-        <div className='flex input-box'>
+        <div className='flex input-box bg-white'>
             <input 
              value={value}
              onChange={onChange}
              type={ShowPassword ? "text" : "password"}
              placeholder={placeholder||"Password"}
-             className='w-full text-sm bg-transparent outline-none'
+             className='w-full text-sm outline-none bg-transparent'
             />
 
             {ShowPassword ? (<FaRegEye

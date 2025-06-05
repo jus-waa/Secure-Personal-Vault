@@ -5,9 +5,9 @@
 @layer base {
     html {
         font-sans: "Poppins", "sans-serif";
+        background-color:#FFFBEB;
     }
     body {
-        background-color: #fdfeff;
         overflow-x: hidden;
     }
 }

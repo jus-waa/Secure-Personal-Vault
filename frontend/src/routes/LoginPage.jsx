@@ -37,9 +37,10 @@ const LoginPage = () => {
     return(
         <>
             <CloudDesign />
-            <div className="h-screen w-screen flex flex-col place-content-center items-center ">
-            <h1 className="flex mb-4 text-4xl text-primary"><LuBookLock />SkyVault</h1>
-                <div className="grid grid-rows-[1fr_4fr] h-96 w-3/12 border-2 bg-white rounded z-10">
+            <div className="h-screen w-screen flex flex-col place-content-center items-center bg-amber-50">
+             <h1 className="flex m-4 text-4xl text-primary place-content-center"><LuBookLock />SkyVault</h1>
+                <div className="grid grid-rows-[1fr_4fr] h-96 w-3/12 border-2 bg-white rounded-2xl z-10 shadow-lg">
+               
                     <h1 className="place-content-center text-2xl pl-8 pt-8 pb-2">
                         Sign In
                         <p className="text-xs text-gray-400">Welcome! Please enter your details.</p>
@@ -50,9 +51,10 @@ const LoginPage = () => {
                             <input
                              type="text"
                              placeholder="Email" 
-                             className="input-box" 
+                             className="input-box bg-white" 
                              value={email}
-                             onChange={(em) => setEmail(em.target.value)} 
+                             onChange={(em) => setEmail(em.target.value)
+                             } 
                             />
                             {/*Password*/}
                             <InputPassword
