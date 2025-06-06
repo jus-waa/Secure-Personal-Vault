@@ -11,7 +11,7 @@ const LoginPage = () => {
     const [password, setPassword] = useState("");
     const [emailError, setEmailError] = useState(null);
     const [passwordError, setPasswordError] = useState(null);
-
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         let isValid = true;

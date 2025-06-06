@@ -2,43 +2,31 @@ import React, { useState } from "react";
 import { motion } from "framer-motion"
 import { Link } from "react-router-dom";
 import { LuBookLock } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
+
+import CloudDesign from "../components/CloudDesign";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
 import InputPassword from "../components/input/InputPassword";
 import { validateEmail, validatePassword } from "../utils/helper";
-import CloudDesign from "../components/CloudDesign";
+import { useAuthStore } from "../store/authStore";
+import { Loader } from "lucide-react";
 
 const SignUpPage = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState(null);
-    const [emailError, setEmailError] = useState(null);
-    const [passwordError, setPasswordError] = useState(null);
+    const navigate = useNavigate();
+	const { signup, error, isLoading } = useAuthStore();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let isValid = true;
-
-        if(!name) {
-            setError("Please enter your name.")
-            isValid = false;
-        }
-        {/*Checking email validity*/}
-        if(!validateEmail(email)) {
-            setEmailError("Please enter a a valid email.");
-            isValid = false;
-        } else {
-            setEmailError(null);
-        }
-        {/*Checking password validity*/}
-        if(!validatePassword(password)) {
-            setPasswordError("Please enter a valid password.");
-            isValid = false;
-        } else {
-            setPasswordError(null);
-        }
-
-        if (!isValid) return;
+        
+		try {
+			await signup(email, password, name);
+			navigate("/verify-email");
+		} catch (error) {
+			console.log(error);
+		}
     };
     
     return(
@@ -82,13 +70,11 @@ const SignUpPage = () => {
                             </div>
                             {/*Error*/}
                             {error && <p className="text-xs text-red-500 pb-2">{error}</p>}
-                            {emailError && <p className="text-xs text-red-500 pb-2">{emailError}</p>}
-                            {passwordError && <p className="text-xs text-red-500 pb-2">{passwordError}</p>}
 					        <PasswordStrengthMeter  password={password} />
                         
-                            <button type="submit" className="btn-primary mt-5">
-                                Create Account
-                            </button>
+                            <motion.button type="submit" className="btn-primary mt-5" disabled={isLoading}>
+                                {isLoading ? <Loader className=' animate-spin mx-auto' size={20} /> : "    Create Account"}
+                            </motion.button>
 
                             <div className="text-sm text-center my-4">
                                 Already have an Account?{" "}
