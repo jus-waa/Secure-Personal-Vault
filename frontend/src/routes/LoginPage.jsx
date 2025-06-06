@@ -4,7 +4,7 @@ import { LuBookLock } from "react-icons/lu";
 
 import InputPassword from "../components/input/InputPassword";
 import { validateEmail, validatePassword } from "../utils/helper";
-import CloudDesign from "../components/CloudDesign";
+import CloudDesign from "../components/CloudDesign2";
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
@@ -36,7 +36,7 @@ const LoginPage = () => {
     
     return(
         <>
-            <CloudDesign />
+            <CloudDesign/>
             <div className="h-screen w-screen flex flex-col place-content-center items-center bg-amber-50">
              <h1 className="flex m-4 text-4xl text-primary place-content-center"><LuBookLock />SkyVault</h1>
                 <div className="grid grid-rows-[1fr_4fr] h-96 w-3/12 border-2 bg-white rounded-2xl z-10 shadow-lg">

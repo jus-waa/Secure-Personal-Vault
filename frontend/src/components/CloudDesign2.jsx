@@ -1,9 +1,9 @@
 import React from 'react'
 
-const CloudDesign = () => {
+const CloudDesign2 = () => {
   return (
     <>
-        <div className='fixed h-screen w-screen -z-10 pointer-events-none'>
+        <div className='fixed h-screen w-screen'>
             <div>
                 {/* Bottom Left Group */}
                 <div className='bg-gradient-to-bl from-yellow-100 via-orange-200 to-orange-500 absolute rounded-[50%] h-64 w-64 -left-40  bottom-96'></div>
@@ -28,4 +28,4 @@ const CloudDesign = () => {
   )
 }
 
-export default CloudDesign;
+export default CloudDesign2;
