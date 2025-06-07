@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
+
 import { Link } from "react-router-dom";
 import { LuBookLock } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
@@ -7,9 +8,11 @@ import { useNavigate } from "react-router-dom";
 import CloudDesign from "../components/CloudDesign";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
 import InputPassword from "../components/input/InputPassword";
+
 import { useAuthStore } from "../store/authStore";
 import { Loader } from "lucide-react";
-
+import { validateEmail, validatePassword } from "../utils/helper";
+import toast from "react-hot-toast";
 const SignUpPage = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -19,8 +22,13 @@ const SignUpPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
 		try {
+            if(!validateEmail(email)){
+                return toast.error("Please enter a valid email.");
+            }
+            if(!validatePassword(password)){
+                return toast.error("Password too weak.");
+            } 
 			await signup(email, password, name);
 			navigate("/verify-email", { state: {email} });
 		} catch (error) {
