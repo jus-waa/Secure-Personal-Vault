@@ -1,12 +1,14 @@
 import { React, useEffect} from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from "react-hot-toast";
+import { useAuthStore } from './store/authStore';
+
 import LoginPage from "./routes/LoginPage";
 import SignUpPage from "./routes/SignUpPage";
 import VerifyEmailPage from "./routes/VerifyEmailPage";
 import HomePage from "./routes/Homepage";
 import SettingsPage from './routes/SettingsPage';
-import { Toaster } from "react-hot-toast";
-import { useAuthStore } from './store/authStore';
+import ForgotPasswordPage from './routes/ForgotPasswordPage';
 
 // protecting routes to unAuth users
     const ProtectedRoute = ({ children }) => {
@@ -55,7 +57,6 @@ const App = () => {
                         <RedirectUser>
                             <SignUpPage/>
                         </RedirectUser>} />
-                <Route path="/verify-email" element={<VerifyEmailPage />} />
                 <Route path="/" 
                     element={
                           <ProtectedRoute>
@@ -68,6 +69,16 @@ const App = () => {
                             <SettingsPage/>
                         </ProtectedRoute>
                     } />
+                <Route path="/verify-email" 
+                 element={ 
+                        <RedirectUser>
+                            <VerifyEmailPage/>
+                        </RedirectUser>} />
+                <Route path="/forgot-password" 
+                 element={ 
+                       
+                            <ForgotPasswordPage/> }
+                       />
             </Routes>
             <Toaster />
         </div>
