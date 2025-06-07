@@ -6,21 +6,7 @@ export const verificationEmailTemplate = `
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Verify Your Email</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #FFFBEB; overflow: hidden; height: 100vh; display: flex; justify-content: center; align-items: center; position: relative;">
-  <div style="position: absolute; top: 24rem; right: -10rem; z-index: -1; background: linear-gradient(to top right, #fef9c3, #fdba74); border-radius: 50%; height: 16rem; width: 16rem;"></div>
-  <div style="position: absolute; top: 12rem; right: -9rem; z-index: -1; background: linear-gradient(to top right, #fef9c3, #fdba74); border-radius: 50%; height: 20rem; width: 20rem;"></div>
-  <div style="position: absolute; top: -5rem; right: -6rem; z-index: -1; background: linear-gradient(to top left, #fef9c3, #fdba74); border-radius: 50%; height: 20rem; width: 20rem;"></div>
-  <div style="position: absolute; top: 0; right: -2rem; z-index: -1; background: linear-gradient(to top right, #fef9c3, #fdba74); border-radius: 50%; height: 24rem; width: 24rem;"></div>
-  <div style="position: absolute; top: -12rem; right: 8rem; z-index: -1; background: linear-gradient(to top right, #fef9c3, #fdba74); border-radius: 50%; height: 24rem; width: 24rem;"></div>
-  <div style="position: absolute; top: -12rem; right: 24rem; z-index: -1; background: linear-gradient(to top right, #fef9c3, #fdba74); border-radius: 50%; height: 16rem; width: 16rem;"></div>
-
-  <div style="position: absolute; bottom: 24rem; left: -10rem; z-index: -1; background: linear-gradient(to bottom left, #fef9c3, #fdba74); border-radius: 50%; height: 16rem; width: 16rem;"></div>
-  <div style="position: absolute; bottom: 12rem; left: -9rem; z-index: -1; background: linear-gradient(to bottom left, #fef9c3, #fdba74); border-radius: 50%; height: 20rem; width: 20rem;"></div>
-  <div style="position: absolute; bottom: -5rem; left: -6rem; z-index: -1; background: linear-gradient(to bottom right, #fef9c3, #fdba74); border-radius: 50%; height: 20rem; width: 20rem;"></div>
-  <div style="position: absolute; bottom: 0; left: -2rem; z-index: -1; background: linear-gradient(to bottom left, #fef9c3, #fdba74); border-radius: 50%; height: 24rem; width: 24rem;"></div>
-  <div style="position: absolute; bottom: -12rem; left: 8rem; z-index: -1; background: linear-gradient(to bottom left, #fef9c3, #fdba74); border-radius: 50%; height: 24rem; width: 24rem;"></div>
-  <div style="position: absolute; bottom: -12rem; left: 24rem; z-index: -1; background: linear-gradient(to bottom left, #fef9c3, #fdba74); border-radius: 50%; height: 16rem; width: 16rem;"></div>
-
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
   <div style="background: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); max-width: 600px; overflow: hidden;">
     <div style="background: #4cb5e6; padding: 20px; text-align: center;">
       <h1 style="color: white; margin: 0; font-size: 24px;">Verify Your Email</h1>
@@ -95,6 +81,7 @@ export const passwordResetSuccessTemplate = `
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Password Reset Successful</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #FFFBEB; overflow: hidden; height: 100vh; display: flex; justify-content: center; align-items: center; position: relative;">
   <div style="position: absolute; top: 24rem; right: -10rem; z-index: -1; background: linear-gradient(to top right, #fef9c3, #fdba74); border-radius: 50%; height: 16rem; width: 16rem;"></div>
@@ -145,6 +132,8 @@ export const passwordResetRequestTemplate = `
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reset Your Password</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
 <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #FFFBEB; overflow: hidden; height: 100vh; display: flex; justify-content: center; align-items: center; position: relative;">
   <div style="position: absolute; top: 24rem; right: -10rem; z-index: -1; background: linear-gradient(to top right, #fef9c3, #fdba74); border-radius: 50%; height: 16rem; width: 16rem;"></div>

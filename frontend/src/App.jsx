@@ -5,6 +5,7 @@ import SignUpPage from "./routes/SignUpPage";
 import VerifyEmailPage from "./routes/VerifyEmailPage";
 import HomePage from "./routes/Homepage";
 import SettingsPage from './routes/SettingsPage';
+import { Toaster } from "react-hot-toast";
 import { useAuthStore } from './store/authStore';
 
 // protecting routes to unAuth users
@@ -42,31 +43,34 @@ const App = () => {
     console.log("isAuth", isAuthenticated);
     console.log("user", user);
     return (
-        <Routes>
-            <Route path="/login" 
-             element={ 
-                    <RedirectUser>
-                        <LoginPage/>
-                    </RedirectUser>} />
-            <Route path="/signup" 
-                element={ 
-                    <RedirectUser>
-                        <SignUpPage/>
-                    </RedirectUser>} />
-            <Route path="/verify-email" element={<VerifyEmailPage />} />
-            <Route path="/" 
-                element={
-                      <ProtectedRoute>
-                        <HomePage/>
-                    </ProtectedRoute>
+        <div>
+            <Routes>
+                <Route path="/login" 
+                 element={ 
+                        <RedirectUser>
+                            <LoginPage/>
+                        </RedirectUser>} />
+                <Route path="/signup" 
+                    element={ 
+                        <RedirectUser>
+                            <SignUpPage/>
+                        </RedirectUser>} />
+                <Route path="/verify-email" element={<VerifyEmailPage />} />
+                <Route path="/" 
+                    element={
+                          <ProtectedRoute>
+                            <HomePage/>
+                        </ProtectedRoute>
+                        } />
+                <Route path="/settings" 
+                    element={
+                        <ProtectedRoute>
+                            <SettingsPage/>
+                        </ProtectedRoute>
                     } />
-            <Route path="/settings" 
-                element={
-                    <ProtectedRoute>
-                        <SettingsPage/>
-                    </ProtectedRoute>
-                } />
-        </Routes>
+            </Routes>
+            <Toaster />
+        </div>
     );
 };
 

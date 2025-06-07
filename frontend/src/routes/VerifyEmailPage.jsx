@@ -62,7 +62,7 @@ const VerifyEmailPage = () => {
         }
 		try {
 			await resendVerification(email);
-			toast.success("Email verified successfully");
+			toast.success("Verification Code resent.");
 		} catch (error) {
 			console.log(error);
 		}
