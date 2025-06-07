@@ -86,15 +86,26 @@ const VerifyEmailPage = () => {
                                 />
                             ))}
                         </div>
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            type="submit"
-                            disabled={isLoading || code.some((digit) => !digit)}
-                            className="w-full bg-sky-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-sky-500 cursor-pointer"
-                        >
-                            {isLoading ? "Verifying..." : "Verify Email"}
-                        </motion.button>
+                        <div className="grid grid-cols-[1.5fr_1fr] space-x-4 ">
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                type="submit"
+                                disabled={isLoading || code.some((digit) => !digit)}
+                                className="bg-sky-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-sky-500 cursor-pointer"
+                            >
+                                {isLoading ? "Verifying..." : "Verify Email"}
+                            </motion.button>
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                type="submit"
+                                disabled={isLoading || code.some((digit) => !digit)}
+                                className="bg-white text-sky-500 font-bold py-3 px-4 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-sky-500 cursor-pointer border border-transparent hover:border-sky-500 duration-300"
+                            >
+                                {isLoading ? "Resending..." : "Resend Code"}
+                            </motion.button>
+                        </div>
                     </form>
                 </motion.div>
             </div>
