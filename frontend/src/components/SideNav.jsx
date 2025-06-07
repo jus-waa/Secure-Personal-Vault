@@ -9,7 +9,7 @@ const SideNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { user } = useAuthStore();
+  const { user, logout } = useAuthStore();
 
   const getSelectedItem = () => {
     const path = location.pathname;
@@ -25,6 +25,10 @@ const SideNav = () => {
     console.log(`Navigating to: ${item} - ${path}`); 
     navigate(path);
   };
+
+  const handleLogout = () => {
+    logout();
+  }
 
   return (
     <>
@@ -120,10 +124,7 @@ const SideNav = () => {
 
                     {isOpen && (
                         <button
-                            onClick={() => {
-                              console.log("Logging out...");
-                              navigate('/login');
-                            }}
+                            onClick={handleLogout}
                             className="p-1 rounded-full hover:bg-red-100 transition"
                             aria-label="Log out"
                         >
