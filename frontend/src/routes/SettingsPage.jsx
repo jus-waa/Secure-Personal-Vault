@@ -1,151 +1,65 @@
 import React, { useState } from "react";
 import {
-  LuBookLock,
-  LuUser,
-  LuLock,
-  LuSave,
+    LuBookLock,
+    LuUser,
+    LuLock,
 } from "react-icons/lu";
-import InputPassword from "../components/input/InputPassword";
+import { MdPassword, MdDomainVerification } from "react-icons/md";
+import { motion } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
 import SideNav from "../components/SideNav";
-
+import { useAuthStore } from "../store/authStore";
 const SettingsPage = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  return (
-    <div className="relative">
-      
-      <SideNav />
-      <div className="min-h-screen bg-amber-50 ml-48 flex flex-col place-content-center items-center py-8">
-        <h1 className="flex mb-8 text-4xl text-primary">
-          <LuBookLock />
-          SkyVault Settings
-        </h1>
-        <div className="flex flex-col gap-8 w-full max-w-4xl px-4">
-          <div className="bg-white border-2 border-gray-200 rounded-lg p-8 shadow-lg relative z-10">
-            <h2 className="text-2xl mb-2 flex items-center gap-2">
-              <LuUser className="text-primary" />
-              Profile Settings
-              <p className="text-xs text-gray-400 ml-2">
-                Update your personal information
-              </p>
-            </h2>
-            <form onSubmit={(e) => e.preventDefault()} className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter your full name"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white relative z-20"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    autoComplete="name"
-                  />
+    const { user } = useAuthStore();
+    return (
+        <div className="relative">
+            
+            <SideNav />
+            <div className="min-h-screen bg-amber-50 ml-48 flex flex-col place-content-center items-center py-8">
+                <h1 className="flex mb-8 text-4xl text-primary">
+                    <LuBookLock />
+                    SkyVault Settings
+                </h1>
+                <div className="flex flex-col gap-8 w-full max-w-4xl px-4">
+                   <div className="bg-white border-2 border-gray-200 rounded-lg p-8 shadow-lg relative z-10">
+                        <h2 className="text-2xl mb-2 flex items-center gap-2">
+                            <LuUser className="text-primary" />
+                            Forgot your password?
+                        </h2>
+                        <p className="text-gray-600 mb-6">
+                            If you’ve forgotten your password, please enter your email address below and click the button to receive instructions on how to reset it.
+                        </p>
+                        <form onSubmit={(e) => e.preventDefault()} className="mt-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Email Address
+                                </label>
+                                <input
+                                    type="email"
+                                    placeholder="Enter your email"
+                                    className="input-box"
+                                    value={user.email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    autoComplete="email"
+                                />
+                            </div>
+                            <Link to="/forgot-password" className=" text-primary">
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    type="submit"
+                                    className="bg-primary text-white px-6 py-2 rounded-md border mt-6 flex items-center gap-2 relative z-20"
+                                >
+                                    <MdPassword />
+                                      Forgot Password?
+                                </motion.button>
+                            </Link>
+                        </form>
+                    </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white relative z-20"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    autoComplete="email"
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    placeholder="Enter your phone number"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white relative z-20"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    autoComplete="tel"
-                  />
-                </div>
-              </div>
-              <button
-                type="submit"
-                className="bg-primary text-white px-6 py-2 rounded-md hover:bg-blue-600 transition-colors mt-6 flex items-center gap-2 relative z-20"
-              >
-                <LuSave />
-                Update Profile
-              </button>
-            </form>
-          </div>
-
-          <div className="bg-white border-2 border-gray-200 rounded-lg p-8 shadow-lg relative z-10">
-            <h2 className="text-2xl mb-2 flex items-center gap-2">
-              <LuLock className="text-primary" />
-              Change Password
-              <p className="text-xs text-gray-400 ml-2">
-                Update your account password
-              </p>
-            </h2>
-            <form onSubmit={(e) => e.preventDefault()} className="mt-6">
-              <div className="grid grid-cols-1 gap-4 max-w-md">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Current Password
-                  </label>
-                  <InputPassword
-                    placeholder="Enter current password"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    autoComplete="current-password"
-                    className="w-full relative z-20"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    New Password
-                  </label>
-                  <InputPassword
-                    placeholder="Enter new password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    autoComplete="new-password"
-                    className="w-full relative z-20"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Confirm New Password
-                  </label>
-                  <InputPassword
-                    placeholder="Confirm new password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    autoComplete="new-password"
-                    className="w-full relative z-20"
-                  />
-                </div>
-              </div>
-              <button
-                type="submit"
-                className="bg-primary text-white px-6 py-2 rounded-md hover:bg-blue-600 transition-colors mt-6 flex items-center gap-2 relative z-20"
-              >
-                <LuLock />
-                Change Password
-              </button>
-            </form>
-          </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default SettingsPage;

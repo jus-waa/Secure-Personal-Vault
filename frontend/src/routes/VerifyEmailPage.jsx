@@ -50,6 +50,7 @@ const VerifyEmailPage = () => {
 			navigate("/");
 			toast.success("Email verified successfully");
 		} catch (error) {
+			toast.error("Invalid Code");
 			console.log(error);
 		}
 	};

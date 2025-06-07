@@ -52,12 +52,12 @@ const SignUpPage = () => {
                     </h1>
                     <div className="w-full px-8">
                         <form onSubmit={handleSubmit}>
-                            <div className="pb-1">
+                            <div className="pb-1 mb-4">
                                 {/*Name*/}
                                 <input
                                     type="text"
                                     placeholder="Name" 
-                                    className="input-box focus:border-blue-300 duration-300" 
+                                    className="input-box focus:border-blue-300 duration-300 mb-4" 
                                     value={name}
                                     onChange={(em) => setName(em.target.value)} 
                                 />
@@ -65,7 +65,7 @@ const SignUpPage = () => {
                                 <input
                                     type="text"
                                     placeholder="Email" 
-                                    className="input-box focus:border-blue-300 duration-300" 
+                                    className="input-box focus:border-blue-300 duration-300 mb-4" 
                                     value={email}
                                     onChange={(em) => setEmail(em.target.value)} 
                                 />

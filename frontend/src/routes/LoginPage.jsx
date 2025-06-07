@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Lock, Loader } from "lucide-react";
 import { Link } from "react-router-dom";
 import { LuBookLock } from "react-icons/lu";
 import InputPassword from "../components/input/InputPassword";
@@ -40,7 +39,7 @@ const LoginPage = () => {
                                 <input
                                  type="text"
                                  placeholder="Email" 
-                                 className="input-box bg-white" 
+                                 className="input-box bg-white mb-4" 
                                  value={email}
                                  onChange={(em) => setEmail(em.target.value)
                                  } 
@@ -50,7 +49,7 @@ const LoginPage = () => {
                                  value={password}
                                  onChange={(em) => setPassword(em.target.value)}
                                 />
-                               <div className="flex justify-between items-center pb-3">
+                               <div className="flex justify-between items-center pb-3 mt-3">
                                     {/* Error or empty placeholder */}
                                     {error ? (
                                       <p className="text-xs text-red-500">{error}</p>
