@@ -7,6 +7,7 @@ import SignUpPage from "./routes/SignUpPage";
 import VerifyEmailPage from "./routes/VerifyEmailPage";
 import HomePage from "./routes/Homepage";
 import SettingsPage from './routes/SettingsPage';
+import { useAuthStore } from './store/authStore';
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
@@ -15,7 +16,7 @@ createRoot(document.getElementById('root')).render(
                 <Route path="/login" element={<LoginPage/>}/>
                 <Route path="/signup" element={<SignUpPage/>}/>
                 <Route path="/verify-email" element={<VerifyEmailPage/>}/>
-                <Route path="/home" element={<HomePage/>}/>
+                <Route path="/" element={<HomePage/>}/>
                 <Route path="/settings" element={<SettingsPage/>}/>
             </Routes>
         </Router>

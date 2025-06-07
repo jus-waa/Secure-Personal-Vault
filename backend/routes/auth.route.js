@@ -7,7 +7,8 @@ import {
     forgotPassword,
     resetPassword,
     checkAuth,
-    getUser
+    getUser,
+    resendVerificationCode
 } from '../controllers/auth.controller.js';
 import {
     validateToken
@@ -23,6 +24,7 @@ router.post("/signup", signup);
 router.post("/logout", logout);
 
 router.post("/verify-email", verifyEmail);
+router.post("/resend-verification-code", resendVerificationCode);
 router.post("/forgot-password", forgotPassword);
 
 router.post("/reset-password/:token", resetPassword);

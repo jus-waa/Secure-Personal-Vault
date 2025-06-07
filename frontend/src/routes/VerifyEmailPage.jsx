@@ -9,9 +9,7 @@ const VerifyEmailPage = () => {
     const [code, setCode] = useState(["", "", "", "", "", ""]);
     const inputRefs = useRef([]);
     const navigate = useNavigate();
-
-    const { error, isLoading, verifyEmail } = useAuthStore();
-
+    const { error, email, isLoading, isResending, verifyEmail, resendVerification } = useAuthStore();
     const handleChange = (index, value) => {
 		const newCode = [...code];
 
@@ -56,6 +54,20 @@ const VerifyEmailPage = () => {
 		}
 	};
 
+    const handleResend = async (e) => {
+		e.preventDefault();
+        if (!email) {
+          toast.error("Email not found, please sign up again.");
+          return;
+        }
+		try {
+			await resendVerification(email);
+			toast.success("Email verified successfully");
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	// Auto submit when all fields are filled
 	useEffect(() => {
 		if (code.every((digit) => digit !== "")) {
@@ -77,7 +89,7 @@ const VerifyEmailPage = () => {
                       Verify Your Email
                     </h2>
                     <p className="text-center text-gray-400 mb-6">
-                      Enter the 6-digit code sent to your email address.
+                      Enter the 6-digit code sent to your email address: <span className="font-semibold">{email}</span>
                     </p>
         
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -108,11 +120,12 @@ const VerifyEmailPage = () => {
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                type="submit"
-                                disabled={isLoading || code.some((digit) => !digit)}
+                                type="button"
+                                onClick={handleResend}
+                                
                                 className="bg-white text-sky-500 font-bold py-3 px-4 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-sky-500 cursor-pointer border border-transparent hover:border-sky-500 duration-300"
                             >
-                                {isLoading ? "Resending..." : "Resend Code"}
+                                {isResending ? "Resending..." : "Resend Code"}
                             </motion.button>
                         </div>
                     </form>

@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import CloudDesign from "../components/CloudDesign";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
 import InputPassword from "../components/input/InputPassword";
-import { validateEmail, validatePassword } from "../utils/helper";
 import { useAuthStore } from "../store/authStore";
 import { Loader } from "lucide-react";
 
@@ -23,7 +22,7 @@ const SignUpPage = () => {
         
 		try {
 			await signup(email, password, name);
-			navigate("/verify-email");
+			navigate("/verify-email", { state: {email} });
 		} catch (error) {
 			console.log(error);
 		}

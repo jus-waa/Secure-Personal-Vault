@@ -1,6 +1,5 @@
 import bcryptjs from "bcryptjs";
-import crypto from "crypto";
-
+import crypto from "crypto"
 import { User } from "../models/user.model.js";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
 import { 
@@ -100,6 +99,55 @@ export const verifyEmail = async(req, res) => {
         res.status(400).json({
             status: "failed",
             message: error.message,
+        });
+    }
+};
+
+export const resendVerificationCode = async(req, res) => {
+    //get email
+    const { email } = req.body;
+    try {
+        //check if there is an email
+        if(!email) {
+            return res.status(400).json({
+                status: "failed",
+                message: "Email is required",
+            });
+        } 
+
+        //find email
+        const user = await User.findOne({ email });
+        if(!user) {
+            return res.status(404).json({
+                status: "failed",
+                message: "User not found",
+            });
+        }
+        //if user is verified 
+        if(user.isVerified) {
+            return res.status(400).json({
+                status: "failed",
+                message: "Email is already verified.",
+            });
+        }
+        //generate new token
+        const newToken = Math.floor(100000 + Math.random() * 900000).toString();
+        user.verificationToken = newToken;
+        user.verificationTokenExpiresAt = Date.now() + 10 * 60 * 1000; // valid for 10 minutes
+
+        await user.save();
+        //send new email
+        await sendVerificationEmail(user.email, newToken);
+        //display message
+        res.status(200).json({
+            status: "success",
+            message: "Verification code resent.",
+        });
+    } catch (error) {
+        console.log("Error in resending verification email", error);
+        res.status(500).json({
+            status: "failed",
+            message: "Failed to resend verification code.",
         });
     }
 };
