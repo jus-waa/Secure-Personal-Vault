@@ -1,21 +1,73 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { React, useEffect} from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from "./routes/LoginPage";
 import SignUpPage from "./routes/SignUpPage";
 import VerifyEmailPage from "./routes/VerifyEmailPage";
 import HomePage from "./routes/Homepage";
 import SettingsPage from './routes/SettingsPage';
+import { useAuthStore } from './store/authStore';
+
+// protecting routes to unAuth users
+    const ProtectedRoute = ({ children }) => {
+	const { isAuthenticated, user } = useAuthStore();
+
+	if (!isAuthenticated) {
+		return <Navigate to='/login' replace />;
+	}
+
+	if (!user.isVerified) {
+		return <Navigate to='/verify-email' replace />;
+	}
+
+	return children;
+};
+// protecting routes to Auth users redirect to home
+const RedirectUser = ({children}) => {
+    const { isAuthenticated, user } = useAuthStore();
+
+    if(isAuthenticated && user.isVerified){
+        return <Navigate to="/" replace /> //auto replace to homepage 
+    }
+
+    return children;
+}
 
 const App = () => {
-  return (
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignUpPage />} />
-      <Route path="/verify-email" element={<VerifyEmailPage />} />
-      <Route path="/" element={<HomePage />} />
-      <Route path="/settings" element={<SettingsPage />} />
-    </Routes>
-  );
+    //check if user is verified
+    const { isCheckingAuth, checkAuth, isAuthenticated, user } = useAuthStore();
+	useEffect(() => {
+		checkAuth();
+	}, [checkAuth]);
+
+    console.log("isAuth", isAuthenticated);
+    console.log("user", user);
+    return (
+        <Routes>
+            <Route path="/login" 
+             element={ 
+                    <RedirectUser>
+                        <LoginPage/>
+                    </RedirectUser>} />
+            <Route path="/signup" 
+                element={ 
+                    <RedirectUser>
+                        <SignUpPage/>
+                    </RedirectUser>} />
+            <Route path="/verify-email" element={<VerifyEmailPage />} />
+            <Route path="/" 
+                element={
+                      <ProtectedRoute>
+                        <HomePage/>
+                    </ProtectedRoute>
+                    } />
+            <Route path="/settings" 
+                element={
+                    <ProtectedRoute>
+                        <SettingsPage/>
+                    </ProtectedRoute>
+                } />
+        </Routes>
+    );
 };
 
 export default App;
