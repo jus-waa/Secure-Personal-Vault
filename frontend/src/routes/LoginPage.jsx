@@ -60,7 +60,7 @@ const LoginPage = () => {
 
                                     {/* Forgot Password */}
                                     <div className="text-sm text-end">
-                                        <Link to="/signUp" className="font-semibold text-primary">
+                                        <Link to="/forgot-password" className="font-semibold text-primary">
                                           Forgot Password?
                                         </Link>
                                     </div>

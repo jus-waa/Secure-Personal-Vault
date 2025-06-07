@@ -9,6 +9,7 @@ import VerifyEmailPage from "./routes/VerifyEmailPage";
 import HomePage from "./routes/Homepage";
 import SettingsPage from './routes/SettingsPage';
 import ForgotPasswordPage from './routes/ForgotPasswordPage';
+import ResetPasswordPage from './routes/ResetPasswordPage';
 
 // protecting routes to unAuth users
     const ProtectedRoute = ({ children }) => {
@@ -59,7 +60,7 @@ const App = () => {
                         </RedirectUser>} />
                 <Route path="/" 
                     element={
-                          <ProtectedRoute>
+                        <ProtectedRoute>
                             <HomePage/>
                         </ProtectedRoute>
                         } />
@@ -70,15 +71,17 @@ const App = () => {
                         </ProtectedRoute>
                     } />
                 <Route path="/verify-email" 
-                 element={ 
-                        <RedirectUser>
-                            <VerifyEmailPage/>
-                        </RedirectUser>} />
+                    element={ <VerifyEmailPage/> } />
                 <Route path="/forgot-password" 
-                 element={ 
-                       
-                            <ForgotPasswordPage/> }
-                       />
+                    element={ 
+                       <RedirectUser>
+                            <ForgotPasswordPage/>
+                        </RedirectUser>} />
+                <Route path="/reset-password/:token" 
+                    element={ 
+                       <RedirectUser>
+                            <ResetPasswordPage/>
+                        </RedirectUser>} />
             </Routes>
             <Toaster />
         </div>
