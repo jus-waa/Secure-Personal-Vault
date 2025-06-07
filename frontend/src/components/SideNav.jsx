@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FiChevronLeft, FiChevronRight, FiHome, FiSettings, FiUser, FiSearch, FiLogOut } from "react-icons/fi";
+import { LuBookLock } from "react-icons/lu";
+import { useAuthStore } from "../store/authStore";
 
 const SideNav = () => {
   const [isOpen, setIsOpen] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  
+
+  const { user } = useAuthStore();
 
   const getSelectedItem = () => {
     const path = location.pathname;
     console.log("Current path:", path); 
-    if (path === "/" || path === "/home") return "Home";
+    if (path === "/") return "Home";
     if (path === "/settings") return "Settings";
     return "Home";
   };
@@ -75,7 +78,7 @@ const SideNav = () => {
                       ? 'bg-gray-200 font-semibold text-black'
                       : 'text-gray-600 hover:bg-gray-100'
                   }`}
-                  onClick={() => handleNavigation('Home', '/home')}
+                  onClick={() => handleNavigation('Home', '/')}
                 >
                   <FiHome className="text-xl" />
                   {isOpen && <span className="ml-4">Home</span>}
@@ -107,33 +110,40 @@ const SideNav = () => {
           </div>
           
 
-          <div className={`grid items-center gap-x-2 px-3 py-2 mb-4 mx-2 rounded hover:bg-gray-100 transition
-            ${isOpen ? 'grid-cols-[auto_auto_1fr_auto]' : 'grid-cols-1 justify-center'}`}
-          >
-            <div className="flex items-center justify-center">
-              <FiUser className="text-2xl" />
-            </div>
-            {isOpen && (
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold">User</span>
-                <span className="text-xs text-gray-500">Email</span>
-              </div>
-            )}
-            {isOpen && <div className="flex-1" />}
-            {isOpen && (
-              <button
-                onClick={() => {
-                  console.log("Logging out...");
+            <div className={`relative group flex flex-col px-3 py-2 mb-4 mx-2 rounded hover:bg-gray-100 transition`}>
+                {/*icon, name, logout*/}
+                <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center space-x-2">
+                      <FiUser className="text-2xl" />
+                      {isOpen && <span className="text-sm font-semibold">{user.name}</span>}
+                    </div>
 
-                  navigate('/login');
-                }}
-                className="p-1 rounded-full hover:bg-red-100 transition"
-                aria-label="Log out"
-              >
-                <FiLogOut className="text-xl text-red-500" />
-              </button>
-            )}
-          </div>
+                    {isOpen && (
+                        <button
+                            onClick={() => {
+                              console.log("Logging out...");
+                              navigate('/login');
+                            }}
+                            className="p-1 rounded-full hover:bg-red-100 transition"
+                            aria-label="Log out"
+                        >
+                          <FiLogOut className="text-xl text-red-500" />
+                        </button>
+                    )}
+                </div>
+                
+                {/*email*/}
+                {isOpen && (
+                    <div className="mt-1">
+                      <span className="text-xs text-gray-500">{user.email}</span>
+                    </div>
+                )}
+                {!isOpen && (
+                    <span className="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-all duration-200 z-10 whitespace-nowrap">
+                      {user.name} — {user.email}
+                    </span>
+                )}
+            </div>
         </div>
       </nav>
     </>
