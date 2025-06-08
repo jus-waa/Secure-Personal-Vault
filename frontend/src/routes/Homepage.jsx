@@ -15,7 +15,7 @@ export default function Homepage() {
 		type: "add",
 		data: null,
 	});
-    const { getAllNotes, notes, isLoading, error } = useNoteStore();
+    const { error, isLoading, notes, getAllNotes, addNote } = useNoteStore();
 
     useEffect(() => {
         getAllNotes();
@@ -69,6 +69,10 @@ export default function Homepage() {
 					onClose={() => {
 						setOpenAddEditModal({ isShown: false, type: "add", data: null });
 					}}
+					onSubmit={async (title, content, tags) => {
+  					  await addNote(title, content, tags); // Call store's addNote
+  					  setOpenAddEditModal({ isShown: false, type: "add", data: null }); // Close modal
+  					}}
 				/>
 			</Modal>
 			<CloudDesign1/>

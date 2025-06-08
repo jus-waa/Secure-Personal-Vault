@@ -80,7 +80,7 @@ const App = () => {
                             <ResetPasswordPage/>
                         </RedirectUser>} />
             </Routes>
-            <Toaster />
+            <Toaster position="top-right" reverseOrder={false} />
         </div>
     );
 };
