@@ -75,10 +75,7 @@ const App = () => {
                 <Route path="/forgot-password" 
                     element={ <ForgotPasswordPage/> } />
                 <Route path="/reset-password/:token" 
-                    element={ 
-                       <RedirectUser>
-                            <ResetPasswordPage/>
-                        </RedirectUser>} />
+                    element={ <ResetPasswordPage/> } />
             </Routes>
             <Toaster position="top-right" reverseOrder={false} />
         </div>

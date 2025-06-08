@@ -27,22 +27,9 @@ const SettingsPage = () => {
                             Forgot your password?
                         </h2>
                         <p className="text-gray-600 mb-6">
-                            If you’ve forgotten your password, please enter your email address below and click the button to receive instructions on how to reset it.
+                            If you’ve forgotten your password, please click the button to receive instructions on how to reset it.
                         </p>
                         <form onSubmit={(e) => e.preventDefault()} className="mt-6">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Email Address
-                                </label>
-                                <input
-                                    type="email"
-                                    placeholder="Enter your email"
-                                    className="input-box"
-                                    value={user.email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    autoComplete="email"
-                                />
-                            </div>
                             <Link to="/forgot-password" className=" text-primary">
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
