@@ -143,39 +143,36 @@ export const deleteNote = async (req, res) => {
     }
 };
 
-// Update isPinned
 export const isPinned = async (req, res) => {
-//get title, content, tags, isPinned, userId, and noteId
-    const noteId = req.params.noteId;
-    const { isPinned } = req.body;
-    const userId = req.userId;
+  const noteId = req.params.noteId;
+  const { isPinned } = req.body;
+  const userId = req.userId;
 
-    try {
-        //get note via id
-        const note = await Note.findOne({
-            _id: noteId,
-            userId,
-        })
-        //if note not found
-        if(!note) {
-            return res.status(404).json({
-                status: "failed",
-                message: "Note not found."
-            });
-        }
-        //how change works
-        if(isPinned) note.isPinned = isPinned;
-        await note.save(); //always save
-        //display message 
-        return res.status(200).json({
-            status: "success",
-            message: "Note updated successfully."
-        })
-    } catch (error) {
-        console.log("Error updating new note ", error);
-        return res.status(400).json({
-            status: "failed",
-            message: error.message,
-        });
+  try {
+    const note = await Note.findOne({ _id: noteId, userId });
+
+    if (!note) {
+      return res.status(404).json({
+        status: "failed",
+        message: "Note not found.",
+      });
     }
+
+    note.isPinned = isPinned;  // directly assign without if check
+    await note.save();
+
+    // fetch updated notes list
+    const notes = await Note.find({ userId }).sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      status: "success",
+      notes,  // <-- send updated notes here
+    });
+  } catch (error) {
+    console.log("Error updating note pin status:", error);
+    return res.status(400).json({
+      status: "failed",
+      message: error.message,
+    });
+  }
 };

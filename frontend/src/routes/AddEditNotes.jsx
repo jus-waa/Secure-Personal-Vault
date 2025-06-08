@@ -9,7 +9,7 @@ const AddEditNotes = ({ noteData, type, onClose }) => {
     const [content, setContent] = useState("");
     const [tags, setTags] = useState([]);
 
-    const { addNote, getAllNotes } = useNoteStore();
+    const { addNote, getAllNotes, editNote } = useNoteStore();
 
     // If editing, prefill
     useEffect(() => {
@@ -31,21 +31,23 @@ const AddEditNotes = ({ noteData, type, onClose }) => {
         }
     };
 
-    const handleAddNote = () => {
-        if (!title) {
-            toast.error("Please enter the title");
-            return;
-        }
-        if (!content) {
-            toast.error("Please enter the content");
-            return;
-        }
+    const handleAddNote = async () => {
+      if (!title) return toast.error("Please enter the title");
+      if (!content) return toast.error("Please enter the content");
 
-        if (type === "edit") {
-            toast("Edit functionality not yet implemented");
+      try {
+        if (type === "edit" && noteData?._id) {
+          await editNote(noteData._id, title, content, tags);
+          toast.success("Note updated!");
         } else {
-            addNewNote();
+          await addNote(title, content, tags);
+          toast.success("Note added successfully!");
         }
+        await getAllNotes();
+        onClose();
+      } catch (err) {
+        toast.error("Action failed");
+      }
     };
 
     return (
