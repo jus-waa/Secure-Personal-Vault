@@ -4,7 +4,7 @@ import { FiChevronLeft, FiChevronRight, FiHome, FiSettings, FiUser, FiSearch, Fi
 import { LuBookLock } from "react-icons/lu";
 import { useAuthStore } from "../store/authStore";
 
-const SideNav = () => {
+const SideNav = ({ searchQuery, setSearchQuery }) => {
   const [isOpen, setIsOpen] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,12 +62,25 @@ const SideNav = () => {
                     <FiSearch className="text-2xl" />
                   </button>
                   {isOpen && (
-                    <input
-                      type="text"
-                      placeholder="Search..."
-                      className="ml-4 bg-transparent border-b border-gray-400 focus:outline-none text-sm w-full"
-                    />
+                    <div className="flex items-center w-full">
+                      <input
+                        type="text"
+                        placeholder="Search..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="ml-4 bg-transparent border-b border-gray-400 focus:outline-none text-sm w-full"
+                      />
+                      {searchQuery && (
+                        <button
+                          onClick={() => setSearchQuery("")}
+                          className="ml-2 text-gray-400 hover:text-black"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
                   )}
+
                   {!isOpen && (
                     <span className="absolute left-12 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-all duration-200 z-10">
                       Search
