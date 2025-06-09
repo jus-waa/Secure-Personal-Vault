@@ -26,19 +26,27 @@ export default function Homepage() {
 		pinNote,
 	} = useNoteStore();
 
+	const [searchQuery, setSearchQuery] = useState("");
+
 	useEffect(() => {
 		getAllNotes();
 	}, []);
 
+	const filteredNotes = notes.filter(note =>
+	note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+	note.content.toLowerCase().includes(searchQuery.toLowerCase())
+	);
+
+
 	return (
 		<div className="ml-20 mr-4">
-			<SideNav />
+			<SideNav searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 			<div className="container mx-auto">
 				<div className="grid grid-cols-3 gap-4 mt-8">
 				  {error && <p className="text-red-500">{error}</p>}				
 
 				  {Array.isArray(notes) && notes.length > 0 ? (
-				    notes.map((note) => (
+				    filteredNotes.map((note) => (
 				      <main key={note._id} className="p-3">
 				        <NoteCard
 				          title={note.title}

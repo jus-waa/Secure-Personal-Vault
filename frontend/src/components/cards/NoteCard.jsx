@@ -16,7 +16,7 @@ const NoteCard = ({title, date, content, tags, isPinned, onEdit, onDelete, onPin
         <MdOutlinePushPin className={`icon-btn ${isPinned ?  'text-primary' : 'text-slate-300'}`} onClick={onPinNote} />
         </div>
 
-        <p className="text-xs text-slate-600 mt-2">{content?.slice(0, 60)}</p>
+        <p className="text-xs text-slate-600 mt-2 overflow-hidden text-ellipsis whitespace-nowrap max-w-full">{content?.slice(0, 60)}</p>
 
         <div className="flex items-center justify-between mt-2"> 
           <div className="text-xs text-slate-500">{tags}</div>
