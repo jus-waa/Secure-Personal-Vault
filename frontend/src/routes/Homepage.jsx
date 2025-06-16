@@ -6,6 +6,7 @@ import AddEditNotes from "./AddEditNotes";
 import { MdAdd } from "react-icons/md";
 import CloudDesign1 from "../components/CloudDesign1";
 import { useNoteStore } from "../store/noteStore.js";
+import toast from "react-hot-toast";
 
 Modal.setAppElement("#root");
 
@@ -15,6 +16,20 @@ export default function Homepage() {
 		type: "add",
 		data: null,
 	});
+
+	const [openUnlockModal, setOpenUnlockModal] = useState({
+		isShown: false,
+		noteId: null,
+		password: "",
+	});
+
+	const [openLockModal, setOpenLockModal] = useState({
+	isShown: false,
+	noteId: null,
+	password: "",
+});
+
+
 
 	const {
 		error,
@@ -37,6 +52,49 @@ export default function Homepage() {
 	note.content.toLowerCase().includes(searchQuery.toLowerCase())
 	);
 
+		const lockNote = async (noteId, password) => {
+			console.log("lockNote controller hit");
+		try {
+			const res = await fetch(`http://localhost:3000/api/v1/notes/lock-note/${noteId}`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+				body: JSON.stringify({ password }),
+			});
+			if (res.ok) {
+				await getAllNotes();
+				toast.success("Note locked successfully!");
+			} else {
+				toast.error("Failed to lock note");
+			}
+		} catch (err) {
+			console.error("Lock error:", err);
+		}
+	};
+
+		const unlockNote = async (noteId, password) => {
+			try {
+				const res = await fetch(`http://localhost:3000/api/v1/notes/unlock-note/${noteId}`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					credentials: "include", // 🟢 This is the missing piece
+					body: JSON.stringify({ password }),
+				});
+				if (res.ok) {
+					const data = await res.json();
+					toast.success("Note unlocked:\n" + data.content);
+				} else {
+					const data = await res.json();
+					toast.error(data.message || "Incorrect password");
+				}
+			} catch (err) {
+				console.error("Unlock error:", err);
+			}
+		};
 
 	return (
 		<div className="ml-20 mr-4">
@@ -54,6 +112,7 @@ export default function Homepage() {
 				          content={note.content}
 				          tags={note.tags.join(", ")}
 				          isPinned={note.isPinned}
+						  isLocked={note.locked} // ✅ Add this
 				          onEdit={() =>
 				            setOpenAddEditModal({ isShown: true, type: "edit", data: note })
 				          }
@@ -71,6 +130,20 @@ export default function Homepage() {
 							    alert("Failed to update pin status");
 							    console.error(err);
 							  }
+							}}
+							onLock={() => {
+								setOpenLockModal({
+									isShown: true,
+									noteId: note._id,
+									password: "",
+								});
+							}}
+							onUnlock={() => {
+								setOpenUnlockModal({
+									isShown: true,
+									noteId: note._id,
+									password: "",
+								});
 							}}
 				        />
 				      </main>
@@ -114,7 +187,84 @@ export default function Homepage() {
 					}}
 				/>
 			</Modal>
-
+			<Modal
+				isOpen={openUnlockModal.isShown}
+				onRequestClose={() =>
+					setOpenUnlockModal({ isShown: false, noteId: null, password: "" })
+				}
+				overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+				className="bg-white w-[30%] max-h-[40vh] rounded-md p-5 overflow-auto outline-none"
+				contentLabel="Unlock Note Modal"
+			>
+				<h2 className="text-lg font-semibold mb-4">Enter password to unlock note</h2>
+				<input
+					type="password"
+					placeholder="Password"
+					className="border p-2 w-full rounded mb-4"
+					value={openUnlockModal.password}
+					onChange={(e) =>
+						setOpenUnlockModal((prev) => ({ ...prev, password: e.target.value }))
+					}
+				/>
+				<div className="flex justify-end gap-2">
+					<button
+						className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+						onClick={() =>
+							setOpenUnlockModal({ isShown: false, noteId: null, password: "" })
+						}
+					>
+						Cancel
+					</button>
+					<button
+						className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+						onClick={async () => {
+							await unlockNote(openUnlockModal.noteId, openUnlockModal.password);
+							setOpenUnlockModal({ isShown: false, noteId: null, password: "" });
+						}}
+					>
+						Unlock
+					</button>
+				</div>
+			</Modal>
+			<Modal
+				isOpen={openLockModal.isShown}
+				onRequestClose={() =>
+					setOpenLockModal({ isShown: false, noteId: null, password: "" })
+				}
+				overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+				className="bg-white w-[30%] max-h-[40vh] rounded-md p-5 overflow-auto outline-none"
+				contentLabel="Lock Note Modal"
+			>
+				<h2 className="text-lg font-semibold mb-4">Set a password to lock this note</h2>
+				<input
+					type="password"
+					placeholder="Password"
+					className="border p-2 w-full rounded mb-4"
+					value={openLockModal.password}
+					onChange={(e) =>
+						setOpenLockModal((prev) => ({ ...prev, password: e.target.value }))
+					}
+				/>
+				<div className="flex justify-end gap-2">
+					<button
+						className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+						onClick={() =>
+							setOpenLockModal({ isShown: false, noteId: null, password: "" })
+						}
+					>
+						Cancel
+					</button>
+					<button
+						className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+						onClick={async () => {
+							await lockNote(openLockModal.noteId, openLockModal.password);
+							setOpenLockModal({ isShown: false, noteId: null, password: "" });
+						}}
+					>
+						Lock
+					</button>
+				</div>
+			</Modal>
 			<CloudDesign1 />
 		</div>
 	);
