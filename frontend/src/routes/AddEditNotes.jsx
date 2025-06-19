@@ -34,7 +34,7 @@ const AddEditNotes = ({ noteData, type, onClose }) => {
       }
 
       await getAllNotes();
-
+      onClose();
     } catch (error) {
       toast.error("Something went wrong.");
       console.error(error);

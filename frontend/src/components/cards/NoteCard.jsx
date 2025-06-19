@@ -6,6 +6,7 @@ import {FiUnlock} from "react-icons/fi";
 
 const NoteCard = ({title, date, content, tags, isPinned, isLocked, isSessionUnlocked, onEdit, onDelete, onPinNote, onLock, onUnlock
     }) => {
+       const shouldBlur = isLocked && !isSessionUnlocked;
   return (
     <div className="border rounded p-4 bg-white hover:shadow-xl transition-all ease-in-out">
         <div className="flex items-center justify-between">
@@ -17,7 +18,12 @@ const NoteCard = ({title, date, content, tags, isPinned, isLocked, isSessionUnlo
         <MdOutlinePushPin className={`icon-btn ${isPinned ?  'text-primary' : 'text-slate-300'}`} onClick={onPinNote} />
         </div>
 
-        <p className="text-xs text-slate-600 mt-2 overflow-hidden text-ellipsis whitespace-nowrap max-w-full">{content?.slice(0, 60)}</p>
+          <div className={shouldBlur ? "blur-sm pointer-events-none select-none" : ""}>
+        <p className="text-xs text-slate-600 mt-2 overflow-hidden text-ellipsis whitespace-nowrap max-w-full">
+          {content?.slice(0, 60)}
+        </p>
+        <div className="text-xs text-slate-500 mt-2">{tags}</div>
+      </div>
 
         <div className="flex items-center justify-between mt-2"> 
           <div className="text-xs text-slate-500">{tags}</div>
@@ -63,4 +69,4 @@ const NoteCard = ({title, date, content, tags, isPinned, isLocked, isSessionUnlo
   )
 }
 
-export default NoteCard
+export default NoteCard 
