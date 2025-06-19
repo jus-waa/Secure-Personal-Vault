@@ -4,7 +4,7 @@ import {MdCreate, MdDelete} from "react-icons/md";
 import {LuBookLock} from "react-icons/lu";
 import {FiUnlock} from "react-icons/fi";
 
-const NoteCard = ({title, date, content, tags, isPinned, isLocked, onEdit, onDelete, onPinNote, onLock, onUnlock
+const NoteCard = ({title, date, content, tags, isPinned, isLocked, isSessionUnlocked, onEdit, onDelete, onPinNote, onLock, onUnlock
     }) => {
   return (
     <div className="border rounded p-4 bg-white hover:shadow-xl transition-all ease-in-out">
@@ -24,27 +24,38 @@ const NoteCard = ({title, date, content, tags, isPinned, isLocked, onEdit, onDel
 
           <div className="flex items-center gap-2">
             {isLocked ? (
-              <FiUnlock
-                className="icon-btn hover:text-blue-500"
-                title="Unlock Note"
-                onClick={onUnlock}
-              />
+              isSessionUnlocked ? (
+                // ✅ Show LOCK button when unlocked in-session
+                <LuBookLock
+                  className="icon-btn hover:text-blue-500"
+                  title="Lock Note"
+                  onClick={onLock}
+                />
+              ) : (
+                // 🔓 Still locked and not yet unlocked
+                <FiUnlock
+                  className="icon-btn hover:text-blue-500"
+                  title="Unlock Note"
+                  onClick={onUnlock}
+                />
+              )
             ) : (
+              // Unlocked in DB — show Lock
               <LuBookLock
                 className="icon-btn hover:text-blue-500"
                 title="Lock Note"
                 onClick={onLock}
               />
             )}
-              <MdCreate
-                className="icon-btn hover:text-green-600"
-                onClick={onEdit}
-              />
-              <MdDelete
-                className="icon-btn hover:text-red-500"
-                onClick={onDelete}
-              />  
-            </div>
+            <MdCreate
+              className="icon-btn hover:text-green-600"
+              onClick={onEdit}
+            />
+            <MdDelete
+              className="icon-btn hover:text-red-500"
+              onClick={onDelete}
+            />  
+          </div>
         </div>
     </div>
 

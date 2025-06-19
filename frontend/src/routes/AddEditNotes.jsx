@@ -92,6 +92,39 @@ const AddEditNotes = ({ noteData, type, onClose }) => {
             >
                 {type === "edit" ? "UPDATE" : "ADD"}
             </button>
+            {type === "edit" && noteData?.locked && (
+                <button
+                    className="bg-red-600 hover:bg-red-700 text-white rounded px-4 py-2 mt-4"
+                    onClick={async () => {
+                    const password = prompt("Enter a new password to re-lock this note:");
+                    if (!password) return toast.error("Password is required");
+
+                    const res = await fetch(`http://localhost:3000/api/v1/notes/lock-note/${noteData._id}`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        credentials: "include",
+                        body: JSON.stringify({ password }),
+                    });
+
+                    if (res.ok) {
+                        toast.success("Note re-locked.");
+
+                        // Notify parent (Homepage) to remove unlocked state
+                        if (typeof window !== "undefined") {
+                            const event = new CustomEvent("relockNote", { detail: noteData._id });
+                            window.dispatchEvent(event);
+                        }
+
+                        onClose(); // Closes the modal
+                    } else {
+                        toast.error("Failed to lock note again.");
+                    }
+                    }}
+                >
+                    🔒 Lock Again
+                </button>
+                )}
+
         </div>
     );
 };

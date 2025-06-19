@@ -251,18 +251,29 @@ export const unlockNote = async (req, res) => {
                 message: "Incorrect password.",
             });
         }
+        // If password matches, unlock the note
+        note.locked = false;
+        note.lockPassword = null;
+        await note.save();
 
         return res.status(200).json({
             status: "success",
             message: "Note unlocked successfully.",
-            content: note.content,
+            note: {
+                _id: note._id,
+                title: note.title,
+                content: note.content,
+                tags: note.tags,
+                isPinned: note.isPinned,
+                locked: note.locked, // include this so frontend reflects state
+            },
         });
-    } catch (error) {
-        console.error("Error unlocking note:", error);
-        return res.status(500).json({
-            status: "failed",
-            message: "Failed to unlock the note.",
-        });
-    }
+        } catch (error) {
+            console.error("Error unlocking note:", error);
+            return res.status(500).json({
+                status: "failed",
+                message: "Failed to unlock the note.",
+            });
+        }
 };
 

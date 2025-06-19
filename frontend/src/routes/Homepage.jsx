@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 Modal.setAppElement("#root");
 
 export default function Homepage() {
+	const [unlockedNoteIds, setUnlockedNoteIds] = useState([]);
 	const [openAddEditModal, setOpenAddEditModal] = useState({
 		isShown: false,
 		type: "add",
@@ -27,9 +28,7 @@ export default function Homepage() {
 	isShown: false,
 	noteId: null,
 	password: "",
-});
-
-
+	});
 
 	const {
 		error,
@@ -45,6 +44,15 @@ export default function Homepage() {
 
 	useEffect(() => {
 		getAllNotes();
+	}, []);
+	
+	useEffect(() => {
+		const handleRelock = (e) => {
+		const noteId = e.detail;
+				setUnlockedNoteIds((prev) => prev.filter(id => id !== noteId));
+		};
+		window.addEventListener("relockNote", handleRelock);
+		return () => window.removeEventListener("relockNote", handleRelock);
 	}, []);
 
 	const filteredNotes = notes.filter(note =>
@@ -77,24 +85,41 @@ export default function Homepage() {
 		const unlockNote = async (noteId, password) => {
 			try {
 				const res = await fetch(`http://localhost:3000/api/v1/notes/unlock-note/${noteId}`, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					credentials: "include", // 🟢 This is the missing piece
-					body: JSON.stringify({ password }),
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+				body: JSON.stringify({ password }),
 				});
+
+				const data = await res.json();
+
 				if (res.ok) {
-					const data = await res.json();
-					toast.success("Note unlocked:\n" + data.content);
+				setUnlockedNoteIds((prev) => [...prev, noteId]);
+
+				setOpenAddEditModal({
+					isShown: true,
+					type: "edit",
+					data: {
+					...data.note,
+					locked: true,
+					},
+				});
+
+				toast.success("Note unlocked temporarily.");
+				return true;
 				} else {
-					const data = await res.json();
-					toast.error(data.message || "Incorrect password");
+				toast.error(data.message || "Incorrect password.");
+				return false;
 				}
 			} catch (err) {
 				console.error("Unlock error:", err);
+				toast.error("Failed to unlock the note.");
+				return false;
 			}
 		};
+
 
 	return (
 		<div className="ml-20 mr-4">
@@ -112,10 +137,25 @@ export default function Homepage() {
 				          content={note.content}
 				          tags={note.tags.join(", ")}
 				          isPinned={note.isPinned}
-						  isLocked={note.locked} // ✅ Add this
-				          onEdit={() =>
-				            setOpenAddEditModal({ isShown: true, type: "edit", data: note })
-				          }
+						  isLocked={note.locked}
+						  isSessionUnlocked={unlockedNoteIds.includes(note._id)}
+
+				          onEdit={() => {
+							const isUnlocked = unlockedNoteIds.includes(note._id);
+							if (note.locked && !isUnlocked) {
+								setOpenUnlockModal({
+								isShown: true,
+								noteId: note._id,
+								password: "",
+								});
+							} else {
+								setOpenAddEditModal({
+								isShown: true,
+								type: "edit",
+								data: note,
+								});
+							}
+							}}
 				          onDelete={async () => {
 				            if (window.confirm("Are you sure you want to delete this note?")) {
 				              await deleteNote(note._id);
@@ -132,12 +172,12 @@ export default function Homepage() {
 							  }
 							}}
 							onLock={() => {
-								setOpenLockModal({
-									isShown: true,
-									noteId: note._id,
-									password: "",
-								});
+							const password = prompt("Set a password to lock this note:");
+							if (!password) return;
+
+							lockNote(note._id, password); // already defined in your logic
 							}}
+
 							onUnlock={() => {
 								setOpenUnlockModal({
 									isShown: true,
@@ -218,8 +258,10 @@ export default function Homepage() {
 					<button
 						className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
 						onClick={async () => {
-							await unlockNote(openUnlockModal.noteId, openUnlockModal.password);
-							setOpenUnlockModal({ isShown: false, noteId: null, password: "" });
+							const success = await unlockNote(openUnlockModal.noteId, openUnlockModal.password);
+							if (success) {
+								setOpenUnlockModal({ isShown: false, noteId: null, password: "" });
+							}
 						}}
 					>
 						Unlock
