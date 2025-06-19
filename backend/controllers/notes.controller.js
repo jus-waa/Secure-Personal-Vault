@@ -137,12 +137,13 @@ export const deleteNote = async (req, res) => {
             message: "Note deleted successfully."
         });
     } catch (error) {
-        console.log
-        return res.status(400).json({
+        console.error("Error deleting note:", error);
+        return res.status(500).json({
             status: "failed", 
-            message: "Failed to fetch notes." 
+            message: "Failed to delete note." 
         });
     }
+
 };
 
 export const isPinned = async (req, res) => {
@@ -276,4 +277,34 @@ export const unlockNote = async (req, res) => {
             });
         }
 };
+export const deleteLockedNote = async (req, res) => {
+  const noteId = req.params.noteId;
+  const { password } = req.body;
+  const userId = req.userId;
+
+  try {
+    const note = await Note.findOne({ _id: noteId, userId });
+    if (!note) {
+      return res.status(404).json({ status: "failed", message: "Note not found." });
+    }
+
+    if (note.locked && note.lockPassword) {
+      const isMatch = await bcrypt.compare(password, note.lockPassword);
+      if (!isMatch) {
+        return res.status(401).json({ status: "failed", message: "Incorrect password." });
+      }
+    }
+
+    await Note.deleteOne({ _id: noteId, userId });
+    return res.status(200).json({ status: "success", message: "Note deleted successfully." });
+
+  } catch (error) {
+    console.error("Error deleting locked note:", error);
+    return res.status(500).json({
+      status: "failed",
+      message: "Server error deleting locked note.",
+    });
+  }
+};
+
 

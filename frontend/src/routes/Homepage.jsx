@@ -73,6 +73,7 @@ export default function Homepage() {
 			});
 			if (res.ok) {
 				await getAllNotes();
+				setUnlockedNoteIds((prev) => prev.filter(id => id !== noteId));
 				toast.success("Note locked successfully!");
 			} else {
 				toast.error("Failed to lock note");
@@ -157,11 +158,40 @@ export default function Homepage() {
 							}
 							}}
 				          onDelete={async () => {
-				            if (window.confirm("Are you sure you want to delete this note?")) {
-				              await deleteNote(note._id);
-				              await getAllNotes();
-				            }
-				          }}
+							if (note.locked && !unlockedNoteIds.includes(note._id)) {
+								// If note is locked, prompt for password
+								const password = prompt("This note is locked. Enter password to delete:");
+								if (!password) return;
+
+								try {
+									const res = await fetch(`http://localhost:3000/api/v1/notes/delete-locked/${note._id}`, {
+									method: "POST",
+									headers: {
+									"Content-Type": "application/json",
+									},
+									credentials: "include",
+									body: JSON.stringify({ password }),
+								});
+								const data = await res.json();
+
+								if (res.ok && data.status === "success") {
+									alert("Note deleted.");
+									await getAllNotes(); // refresh notes
+								} else {
+									alert(data.message || "Failed to delete.");
+								}
+								} catch (err) {
+								console.error(err);
+								alert("Something went wrong.");
+								}
+							} else {
+								if (window.confirm("Are you sure you want to delete this note?")) {
+								await deleteNote(note._id);
+								await getAllNotes();
+								}
+							}
+						}}
+
 				          onPinNote={async () => {
 							  try {
 							    await pinNote(note._id, !note.isPinned);
