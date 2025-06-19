@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+
 const noteSchema = new mongoose.Schema({
   userId: {
     type: String,
@@ -21,7 +22,15 @@ const noteSchema = new mongoose.Schema({
     type: [String],
     default: [],
   },
-  createdAt: {
+  locked: {
+    type: Boolean,
+    default: false,
+  },
+  lockPassword: {
+    type: String,
+    default: null,
+  },
+   createdAt: {
     type: Date,
     default: Date.now,
   },
