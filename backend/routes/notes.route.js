@@ -8,6 +8,9 @@ import {
     lockNote,
     unlockNote,
     deleteLockedNote,
+    getNoteById,
+    unlockNoteWithCredentials,
+    forgotPasswordUnlock,
 } from "../controllers/notes.controller.js";
 import { validateToken } from '../middleware/validateToken.js';
 const router = express.Router();
@@ -23,4 +26,8 @@ router.patch("/update-pinned-note/:noteId", isPinned);
 router.post("/lock-note/:noteId", lockNote);
 router.post("/unlock-note/:noteId", unlockNote);
 router.post("/delete-locked/:noteId", deleteLockedNote);
+router.get("/get-note/:noteId", getNoteById);
+router.post("/unlock-note-by-credentials/:noteId", unlockNoteWithCredentials);
+router.post("/forgot-password-unlock/:noteId", forgotPasswordUnlock); // <-- No auth
+
 export default router;
