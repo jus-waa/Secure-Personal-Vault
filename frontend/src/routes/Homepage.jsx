@@ -16,6 +16,9 @@ export default function Homepage() {
 	const [openUnlockModal, setOpenUnlockModal] = useState({ isShown: false, noteId: null, password: "" });
 	const [openLockModal, setOpenLockModal] = useState({ isShown: false, noteId: null, password: "" });
 	const [openForgotPasswordModal, setOpenForgotPasswordModal] = useState({ isShown: false, noteId: null, email: "", accountPassword: "" });
+	const [openManualLockModal, setOpenManualLockModal] = useState({ isShown: false, noteId: null, password: "" });
+	const [openRelockModal, setOpenRelockModal] = useState({ isShown: false, noteId: null });
+	const [relockPassword, setRelockPassword] = useState("");
 
 	const {
 		error,
@@ -40,6 +43,14 @@ export default function Homepage() {
 		};
 		window.addEventListener("relockNote", handleRelock);
 		return () => window.removeEventListener("relockNote", handleRelock);
+	}, []);
+
+	useEffect(() => {
+		const handleOpenRelockModal = (e) => {
+			setOpenRelockModal({ isShown: true, noteId: e.detail });
+		};
+		window.addEventListener("openRelockModal", handleOpenRelockModal);
+		return () => window.removeEventListener("openRelockModal", handleOpenRelockModal);
 	}, []);
 
 	const filteredNotes = notes.filter(note =>
@@ -213,9 +224,11 @@ export default function Homepage() {
 										}
 									}}
 									onLock={() => {
-										const password = prompt("Set a password to lock this note:");
-										if (!password) return;
-										lockNote(note._id, password);
+										setOpenManualLockModal({
+											isShown: true,
+											noteId: note._id,
+											password: ""
+										});
 									}}
 									onUnlock={() => {
 										setOpenUnlockModal({ isShown: true, noteId: note._id, password: "" });
@@ -352,6 +365,94 @@ export default function Homepage() {
 				</div>
 			</Modal>
 
+			<Modal
+				isOpen={openManualLockModal.isShown}
+				onRequestClose={() =>
+					setOpenManualLockModal({ isShown: false, noteId: null, password: "" })
+				}
+				overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+				className="bg-white w-[30%] max-h-[40vh] rounded-md p-5 overflow-auto outline-none"
+				contentLabel="Lock Note Modal"
+			>
+				<h2 className="text-lg font-semibold mb-4">Set a password to lock this note</h2>
+				<input
+					type="password"
+					placeholder="Password"
+					className="border p-2 w-full rounded mb-4"
+					value={openManualLockModal.password}
+					onChange={(e) =>
+						setOpenManualLockModal((prev) => ({ ...prev, password: e.target.value }))
+					}
+				/>
+				<div className="flex justify-end gap-2">
+					<button
+						className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+						onClick={() =>
+							setOpenManualLockModal({ isShown: false, noteId: null, password: "" })
+						}
+					>
+						Cancel
+					</button>
+					<button
+						className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+						onClick={async () => {
+							await lockNote(openManualLockModal.noteId, openManualLockModal.password);
+							setOpenManualLockModal({ isShown: false, noteId: null, password: "" });
+						}}
+					>
+						Lock
+					</button>
+				</div>
+			</Modal>
+			<Modal
+				isOpen={openRelockModal.isShown}
+				onRequestClose={() => setOpenRelockModal({ isShown: false, noteId: null })}
+				overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+				className="bg-white w-[30%] max-h-[45vh] rounded-md p-5 overflow-auto outline-none"
+				contentLabel="Relock Note Modal"
+				>
+				<h2 className="text-lg font-semibold mb-4">Set new password to re-lock note</h2>
+				<input
+					type="password"
+					placeholder="New Password"
+					className="border p-2 w-full rounded mb-4"
+					onChange={(e) => setOpenRelockModal(prev => ({ ...prev, password: e.target.value }))}
+				/>
+				<div className="flex justify-end gap-2">
+					<button
+					className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+					onClick={() => setOpenRelockModal({ isShown: false, noteId: null })}
+					>
+					Cancel
+					</button>
+					<button
+					className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+					onClick={async () => {
+						if (!openRelockModal.password) return toast.error("Password is required");
+
+						const res = await fetch(`http://localhost:3000/api/v1/notes/lock-note/${openRelockModal.noteId}`, {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						credentials: "include",
+						body: JSON.stringify({ password: openRelockModal.password }),
+						});
+
+						const data = await res.json();
+						if (res.ok) {
+						toast.success("Note re-locked.");
+						const event = new CustomEvent("relockNote", { detail: openRelockModal.noteId });
+						window.dispatchEvent(event);
+						await getAllNotes();
+						setOpenRelockModal({ isShown: false, noteId: null, password: "" });
+						} else {
+						toast.error(data.message || "Failed to re-lock.");
+						}
+					}}
+					>
+					Lock Note
+					</button>
+				</div>
+			</Modal>
 			<CloudDesign1 />
 		</div>
 	);

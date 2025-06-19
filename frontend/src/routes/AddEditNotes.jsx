@@ -34,42 +34,21 @@ const AddEditNotes = ({ noteData, type, onClose }) => {
       }
 
       await getAllNotes();
+
     } catch (error) {
       toast.error("Something went wrong.");
       console.error(error);
     }
   };
 
-  const handleRelock = async () => {
-    const password = prompt("Enter a new password to re-lock this note:");
-    if (!password) return toast.error("Password is required");
-
-    try {
-      const res = await fetch(`http://localhost:3000/api/v1/notes/lock-note/${noteData._id}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ password }),
-      });
-
-      if (res.ok) {
-        toast.success("Note re-locked.");
-        if (typeof window !== "undefined") {
-          const event = new CustomEvent("relockNote", { detail: noteData._id });
-          window.dispatchEvent(event);
-        }
-
-        await getAllNotes();
-        onClose(); // Only close if relock succeeded
-      } else {
-        const data = await res.json();
-        toast.error(data.message || "Failed to lock note again.");
-      }
-    } catch (err) {
-      toast.error("Error during locking.");
-      console.error(err);
+  const handleRelock = () => {
+    onClose(); // close the edit modal first
+    if (typeof window !== "undefined") {
+        const event = new CustomEvent("openRelockModal", { detail: noteData._id });
+        window.dispatchEvent(event); // trigger modal from Homepage
     }
   };
+
 
   return (
     <div className="relative">
@@ -118,7 +97,11 @@ const AddEditNotes = ({ noteData, type, onClose }) => {
         {type === "edit" && noteData?.locked && (
           <button
             className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white rounded px-4 py-2"
-            onClick={handleRelock}
+            onClick={() => {
+                onClose(); // Close the current modal to prevent triple-layering
+                window.dispatchEvent(new CustomEvent("openRelockModal", { detail: noteData._id }));
+            }}
+
           >
             <LuBookLock className="w-4 h-4" />
           </button>
