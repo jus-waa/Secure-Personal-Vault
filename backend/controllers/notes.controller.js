@@ -1,3 +1,5 @@
+import bcrypt from "bcryptjs";
+
 import { Note } from "../models/note.model.js";
 
 // Get all notes
@@ -176,3 +178,91 @@ export const isPinned = async (req, res) => {
     });
   }
 };
+
+export const lockNote = async (req, res) => {
+    console.log("lockNote controller hit");
+    const noteId = req.params.noteId;
+    const { password } = req.body;
+    const userId = req.userId;
+
+    try {
+        if (!password) {
+            return res.status(400).json({
+                status: "failed",
+                message: "Password is required to lock the note.",
+            });
+        }
+
+        const note = await Note.findOne({ _id: noteId, userId });
+        if (!note) {
+            return res.status(404).json({
+                status: "failed",
+                message: "Note not found.",
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        note.locked = true;
+        note.lockPassword = hashedPassword; // store hashed password
+        await note.save();
+
+        return res.status(200).json({
+            status: "success",
+            message: "Note locked successfully.",
+        });
+    } catch (error) {
+        console.log("Error locking note:", error);
+        return res.status(500).json({
+            status: "failed",
+            message: "Failed to lock the note.",
+        });
+    }
+
+};
+
+export const unlockNote = async (req, res) => {
+    const noteId = req.params.noteId;
+    const { password } = req.body;
+    const userId = req.userId;
+
+    console.log("UNLOCK ATTEMPT");
+    console.log("Note ID:", noteId);
+    console.log("User ID:", userId);
+    console.log("Entered password:", password);
+
+    try {
+        const note = await Note.findOne({ _id: noteId, userId });
+        if (!note || !note.locked) {
+            console.log("Note not found or not locked.");
+            return res.status(404).json({
+                status: "failed",
+                message: "Note not found or not locked.",
+            });
+        }
+
+        console.log("Stored hash:", note.lockPassword);
+
+        const isMatch = await bcrypt.compare(password, note.lockPassword);
+        console.log("Password match:", isMatch);
+
+        if (!isMatch) {
+            return res.status(401).json({
+                status: "failed",
+                message: "Incorrect password.",
+            });
+        }
+
+        return res.status(200).json({
+            status: "success",
+            message: "Note unlocked successfully.",
+            content: note.content,
+        });
+    } catch (error) {
+        console.error("Error unlocking note:", error);
+        return res.status(500).json({
+            status: "failed",
+            message: "Failed to unlock the note.",
+        });
+    }
+};
+
