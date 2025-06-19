@@ -19,6 +19,9 @@ export default function Homepage() {
 	const [openManualLockModal, setOpenManualLockModal] = useState({ isShown: false, noteId: null, password: "" });
 	const [openRelockModal, setOpenRelockModal] = useState({ isShown: false, noteId: null });
 	const [relockPassword, setRelockPassword] = useState("");
+	const [openDeleteConfirmModal, setOpenDeleteConfirmModal] = useState({ isShown: false, noteId: null });
+	const [openDeleteLockedModal, setOpenDeleteLockedModal] = useState({ isShown: false, noteId: null, password: "" });
+
 
 	const {
 		error,
@@ -187,31 +190,10 @@ export default function Homepage() {
 									}}
 									onDelete={async () => {
 										if (note.locked && !unlockedNoteIds.includes(note._id)) {
-											const password = prompt("This note is locked. Enter password to delete:");
-											if (!password) return;
-											try {
-												const res = await fetch(`http://localhost:3000/api/v1/notes/delete-locked/${note._id}`, {
-													method: "POST",
-													headers: { "Content-Type": "application/json" },
-													credentials: "include",
-													body: JSON.stringify({ password }),
-												});
-												const data = await res.json();
-												if (res.ok && data.status === "success") {
-													alert("Note deleted.");
-													await getAllNotes();
-												} else {
-													alert(data.message || "Failed to delete.");
-												}
-											} catch (err) {
-												console.error(err);
-												alert("Something went wrong.");
-											}
+											setOpenDeleteLockedModal({ isShown: true, noteId: note._id, password: "" });
+
 										} else {
-											if (window.confirm("Are you sure you want to delete this note?")) {
-												await deleteNote(note._id);
-												await getAllNotes();
-											}
+											 setOpenDeleteConfirmModal({ isShown: true, noteId: note._id });
 										}
 									}}
 									onPinNote={async () => {
@@ -364,6 +346,91 @@ export default function Homepage() {
 					</button>
 				</div>
 			</Modal>
+			<Modal
+				isOpen={openDeleteLockedModal.isShown}
+				onRequestClose={() => setOpenDeleteLockedModal({ isShown: false, noteId: null, password: "" })}
+				overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+				className="bg-white w-[30%] max-h-[35vh] rounded-md p-5 overflow-auto outline-none"
+				contentLabel="Delete Locked Note"
+			>
+				<h2 className="text-lg font-semibold mb-4">This note is locked. Enter password to delete:</h2>
+				<input
+					type="password"
+					placeholder="Password"
+					className="border p-2 w-full rounded mb-4"
+					value={openDeleteLockedModal.password}
+					onChange={(e) =>
+						setOpenDeleteLockedModal(prev => ({ ...prev, password: e.target.value }))
+					}
+				/>
+				<div className="flex justify-end gap-2">
+					<button
+						className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+						onClick={() => setOpenDeleteLockedModal({ isShown: false, noteId: null, password: "" })}
+					>
+						Cancel
+					</button>
+					<button
+						className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+						onClick={async () => {
+							if (!openDeleteLockedModal.password) {
+								toast.error("Password is required");
+								return;
+							}
+							try {
+								const res = await fetch(`http://localhost:3000/api/v1/notes/delete-locked/${openDeleteLockedModal.noteId}`, {
+									method: "POST",
+									headers: { "Content-Type": "application/json" },
+									credentials: "include",
+									body: JSON.stringify({ password: openDeleteLockedModal.password }),
+								});
+								const data = await res.json();
+								if (res.ok && data.status === "success") {
+									toast.success("Note deleted.");
+									await getAllNotes();
+									setOpenDeleteLockedModal({ isShown: false, noteId: null, password: "" });
+								} else {
+									toast.error(data.message || "Failed to delete.");
+								}
+							} catch (err) {
+								console.error(err);
+								toast.error("Something went wrong.");
+							}
+						}}
+					>
+						Delete
+					</button>
+				</div>
+			</Modal>
+
+			<Modal
+				isOpen={openDeleteConfirmModal.isShown}
+				onRequestClose={() => setOpenDeleteConfirmModal({ isShown: false, noteId: null })}
+				overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+				className="bg-white w-[30%] max-h-[30vh] rounded-md p-5 overflow-auto outline-none"
+				contentLabel="Confirm Delete"
+				>
+				<h2 className="text-lg font-semibold mb-4">Are you sure you want to delete this note?</h2>
+				<div className="flex justify-end gap-2">
+					<button
+					className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+					onClick={() => setOpenDeleteConfirmModal({ isShown: false, noteId: null })}
+					>
+					Cancel
+					</button>
+					<button
+					className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+					onClick={async () => {
+						await deleteNote(openDeleteConfirmModal.noteId);
+						await getAllNotes();
+						setOpenDeleteConfirmModal({ isShown: false, noteId: null });
+					}}
+					>
+					Delete
+					</button>
+				</div>
+				</Modal>
+
 
 			<Modal
 				isOpen={openManualLockModal.isShown}

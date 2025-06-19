@@ -160,8 +160,10 @@ const SideNav = ({ searchQuery, setSearchQuery }) => {
                 
                 {/*email*/}
                 {isOpen && (
-                    <div className="mt-1">
-                      <span className="text-xs text-gray-500">{user.email}</span>
+                    <div className="mt-1 w-full">
+                        <span className="text-xs text-gray-500 block truncate">
+                            {user.email}
+                        </span>
                     </div>
                 )}
                 {!isOpen && (
