@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { FiChevronLeft, FiChevronRight, FiHome, FiSettings, FiUser, FiSearch, FiLogOut } from "react-icons/fi";
 import { LuBookLock } from "react-icons/lu";
 import { useAuthStore } from "../store/authStore";
+import logo from "../assets/logo.png";
 
 const SideNav = ({ searchQuery, setSearchQuery }) => {
   const [isOpen, setIsOpen] = useState(true);
@@ -35,9 +36,20 @@ const SideNav = ({ searchQuery, setSearchQuery }) => {
       <nav className="h-screen fixed top-0 left-0 z-40">
         <div className={`h-full shadow-2xl bg-white flex flex-col justify-between transition-all duration-300 ${isOpen ? 'w-48' : 'w-16'}`}>
           <div className="flex flex-col items-center mt-4">                   
-            <div className="relative w-full mb-8 px-4">                
-              <h1 className="text-xl font-bold py-3">
-                {isOpen ? "SkyVault" : "SV"}
+            <div className="relative w-full px-4">                
+              <h1 className="text-xl font-bold mb-8 py-2">
+                {isOpen ? (
+                      <div className="flex items-center -top-2 absolute">
+                      <h1 className="text-xl font-bold">SkyVault</h1>
+                      <img 
+                        src={logo}
+                        alt="SkyVault Logo"
+                        className="w-16 h-16"
+                      />
+                    </div>
+                  ) :  <img src={logo} alt="Logo" className="absolute -top-2 -left-1 w-16 h-16" />
+                
+                }
               </h1>
               <button
                 onClick={() => setIsOpen(!isOpen)}
